@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -20,7 +22,7 @@ import java.util.SortedSet;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder> {
 
-    private SortedSet<String> mDataset;
+    private Map<String, MRPCDeviceInfo> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -35,7 +37,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DeviceListAdapter(SortedSet<String> myDataset) {
+    public DeviceListAdapter(Map<String, MRPCDeviceInfo> myDataset) {
         mDataset = myDataset;
     }
 
@@ -58,9 +60,9 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         int i = 0;
-        for (String item:mDataset) {
+        for (MRPCDeviceInfo item:mDataset.values()) {
             if(i==position) {
-                holder.mUUIDTV.setText(item);
+                holder.mUUIDTV.setText(item.uuid);
                 break;
             }
             i++;

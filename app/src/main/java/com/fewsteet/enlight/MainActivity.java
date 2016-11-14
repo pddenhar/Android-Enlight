@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void updateSwitch(int switchId, final String path) {
         final Switch sw = (Switch)findViewById(switchId);
-        mrpc.RPC(path, null, new Result.JSONCallback() {
+        mrpc.RPC(path, null, new Result.Callback() {
             @Override
             public void onSuccess(JsonElement value) {
                 Boolean b = Message.gson().fromJson(value, Boolean.class);

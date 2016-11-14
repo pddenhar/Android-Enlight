@@ -17,6 +17,7 @@ import net.vector57.android_mrpc.MRPC;
 import net.vector57.android_mrpc.Message;
 import net.vector57.android_mrpc.Result;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,14 +29,19 @@ import static com.fewsteet.enlight.R.id.devices;
 public class DeviceBrowserActivity extends AppCompatActivity {
     final static String TAG = "DeviceBrowserActivity";
     private MRPC mrpc;
-    private final SortedSet<String> devices = new TreeSet<>();
+    private final HashMap<String, MRPCDeviceInfo> devices = new HashMap<String, MRPCDeviceInfo>();
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private TreeSet<String> groups;
+    private TreeSet<String> all_names;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_browser);
+        groups = new TreeSet<>();
+        all_names = new TreeSet<>();
+
         mrpc = MRPCSingleton.getInstance(getApplicationContext()).getMRPC();
         findDevices();
 
@@ -72,9 +78,20 @@ public class DeviceBrowserActivity extends AppCompatActivity {
             public void onResult(Message.Response response) {
                 if(response.error == null) {
                     List<String> names = Message.gson().fromJson(response.result, new TypeToken<List<String>>(){}.getType());
+                    String uuid = response.src;
+                    if(!devices.containsKey(uuid)) {
+                        devices.put(uuid, new MRPCDeviceInfo(uuid));
+                        Log.d(TAG, uuid);
+                    }
                     if(names != null) {
                         for (String name : names) {
-                            devices.add(name);
+                            if(all_names.contains(name)) {
+                                all_names.remove(name);
+                                groups.add(name);
+                            } else {
+                                all_names.add(name);
+                            }
+                            devices.get(uuid).aliases.add(name);
                             mAdapter.notifyDataSetChanged();
                             Log.d(TAG, name);
                         }
