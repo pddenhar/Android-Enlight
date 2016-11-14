@@ -17,9 +17,11 @@
         android:layout_height="wrap_content"
         android:checked="false"
         android:textAlignment="textEnd"
+        android:gravity="end"
         android:textSize="20sp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
 
     <Switch
         android:id="@+id/couch"
@@ -28,19 +30,23 @@
         android:layout_height="wrap_content"
         android:checked="false"
         android:textAlignment="textEnd"
+        android:gravity="end"
         android:textSize="20sp"
-        android:layout_below="@+id/hallway"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/front"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
 
     <Switch
         android:id="@+id/all"
-        android:text="Desk "
+        android:text="All "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="false"
         android:textAlignment="textEnd"
+        android:gravity="end"
         android:textSize="20sp"
-        android:layout_below="@+id/livingRoom"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/couch"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>
