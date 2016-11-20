@@ -1,6 +1,6 @@
 package com.fewsteet.enlight;
 
-import net.vector57.android_mrpc.MRPC;
+import net.vector57.mrpc.MRPC;
 
 import java.util.HashSet;
 import java.util.TreeSet;

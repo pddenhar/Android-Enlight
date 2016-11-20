@@ -11,9 +11,9 @@ import android.widget.Switch;
 
 import com.google.gson.JsonElement;
 
-import net.vector57.android_mrpc.MRPC;
-import net.vector57.android_mrpc.Message;
-import net.vector57.android_mrpc.Result;
+import net.vector57.mrpc.MRPC;
+import net.vector57.mrpc.Message;
+import net.vector57.mrpc.Result;
 
 public class MainActivity extends AppCompatActivity {
     private MRPC mrpc;
@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mrpc = MRPCSingleton.getInstance(getApplicationContext()).getMRPC();
+        mrpc.start();
         attachSwitch(R.id.front, "/A.light");
         attachSwitch(R.id.couch, "/B.light");
         attachSwitch(R.id.all, "*.light");

@@ -2,7 +2,7 @@ package com.fewsteet.enlight;
 
 import android.content.Context;
 
-import net.vector57.android_mrpc.MRPC;
+import net.vector57.mrpc.MRPC;
 
 /**
  * Created by peter on 11/13/16.

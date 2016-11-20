@@ -13,9 +13,9 @@ import android.view.View;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import net.vector57.android_mrpc.MRPC;
-import net.vector57.android_mrpc.Message;
-import net.vector57.android_mrpc.Result;
+import net.vector57.mrpc.MRPC;
+import net.vector57.mrpc.Message;
+import net.vector57.mrpc.Result;
 
 import java.util.HashMap;
 import java.util.HashSet;
