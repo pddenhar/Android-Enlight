@@ -43,7 +43,6 @@ public class DeviceBrowserActivity extends AppCompatActivity {
         all_names = new TreeSet<>();
 
         mrpc = MRPCSingleton.getInstance(getApplicationContext()).getMRPC();
-        findDevices();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
@@ -58,6 +57,21 @@ public class DeviceBrowserActivity extends AppCompatActivity {
         // specify an adapter (see also next example)
         mAdapter = new DeviceListAdapter(devices);
         mRecyclerView.setAdapter(mAdapter);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mrpc.start();
+        findDevices();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            mrpc.close();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
     }
     public boolean onCreateOptionsMenu(Menu menu) {
 
