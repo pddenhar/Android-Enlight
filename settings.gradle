@@ -1,4 +1,4 @@
 include ':app'
 
 include ':mrpc'
-project(':mrpc').projectDir = new File(settingsDir, '../Android-MRPC/mrpc')
+project(':mrpc').projectDir = new File(settingsDir, '../android-mrpc/mrpc')

@@ -42,8 +42,6 @@ public class DeviceBrowserActivity extends AppCompatActivity {
         groups = new TreeSet<>();
         all_names = new TreeSet<>();
 
-        mrpc = MRPCSingleton.getInstance(getApplicationContext()).getMRPC();
-
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
         // use this setting to improve performance if you know that changes
@@ -61,6 +59,8 @@ public class DeviceBrowserActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "Starting MRPC");
+        mrpc = new MRPC(getApplicationContext());
         mrpc.start();
         findDevices();
     }
@@ -68,7 +68,9 @@ public class DeviceBrowserActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         try {
+            Log.d(TAG, "Closing MRPC");
             mrpc.close();
+            mrpc = null;
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
