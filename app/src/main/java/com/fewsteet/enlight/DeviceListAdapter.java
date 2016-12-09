@@ -4,7 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -30,9 +32,11 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mUUIDTV;
+        public ListView mGroupsListView;
         public ViewHolder(View v) {
             super(v);
             mUUIDTV = (TextView)v.findViewById(R.id.deviceUUID);
+            mGroupsListView = (ListView)v.findViewById(R.id.deviceGroups);
         }
     }
 
@@ -63,6 +67,10 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         for (MRPCDeviceInfo item:mDataset.values()) {
             if(i==position) {
                 holder.mUUIDTV.setText(item.uuid);
+                String[] from = { "name", "purpose" };
+                int[] to = { android.R.id.text1, android.R.id.text2 };
+                holder.mGroupsListView.setAdapter(new SimpleAdapter(this, item.aliases,
+                        R.layout.view_group_item, from, to););
                 break;
             }
             i++;

@@ -2,6 +2,7 @@ package com.fewsteet.enlight;
 
 import net.vector57.mrpc.MRPC;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
 
@@ -11,7 +12,7 @@ import java.util.TreeSet;
 
 public class MRPCDeviceInfo {
     public String uuid;
-    public HashSet<String> aliases = new HashSet<String>();
+    public ArrayList<String> aliases;
 
     public MRPCDeviceInfo(String uuid) {
         this.uuid = uuid;

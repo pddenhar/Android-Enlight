@@ -19,6 +19,7 @@ public class EnlightApp extends Application {
     private static Context context;
     private static MRPC mrpc;
     public static final String PATH_CACHE_FILENAME = "path_cache.json";
+    public static final String LAYOUT_CONFIG_FILENAME = "layout_config.json";
 
     @Override
     public void onCreate() {

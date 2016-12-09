@@ -17,6 +17,7 @@ import net.vector57.mrpc.MRPC;
 import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,15 +34,10 @@ public class DeviceBrowserActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private TreeSet<String> groups;
-    private TreeSet<String> all_names;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_browser);
-        groups = new TreeSet<>();
-        all_names = new TreeSet<>();
-
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
         // use this setting to improve performance if you know that changes
@@ -93,25 +89,13 @@ public class DeviceBrowserActivity extends AppCompatActivity {
             @Override
             public void onResult(Message.Response response) {
                 if(response.error == null) {
-                    List<String> names = Message.gson().fromJson(response.result, new TypeToken<List<String>>(){}.getType());
                     String uuid = response.src;
+                    ArrayList<String> names = Message.gson().fromJson(response.result, new TypeToken<ArrayList<String>>(){}.getType());
                     if(!devices.containsKey(uuid)) {
                         devices.put(uuid, new MRPCDeviceInfo(uuid));
                         Log.d(TAG, uuid);
                     }
-                    if(names != null) {
-                        for (String name : names) {
-                            if(all_names.contains(name)) {
-                                all_names.remove(name);
-                                groups.add(name);
-                            } else {
-                                all_names.add(name);
-                            }
-                            devices.get(uuid).aliases.add(name);
-                            mAdapter.notifyDataSetChanged();
-                            Log.d(TAG, name);
-                        }
-                    }
+                    devices.get(uuid).aliases = names;
                 }
             }
         });
