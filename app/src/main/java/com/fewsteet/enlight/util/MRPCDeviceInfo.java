@@ -1,4 +1,4 @@
-package com.fewsteet.enlight;
+package com.fewsteet.enlight.util;
 
 import net.vector57.mrpc.MRPC;
 

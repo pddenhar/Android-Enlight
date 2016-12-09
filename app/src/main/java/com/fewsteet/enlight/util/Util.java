@@ -1,4 +1,4 @@
-package com.fewsteet.enlight;
+package com.fewsteet.enlight.util;
 
 import android.content.Context;
 import android.net.DhcpInfo;

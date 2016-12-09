@@ -1,22 +1,22 @@
-package com.fewsteet.enlight;
+package com.fewsteet.enlight.browser;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import com.fewsteet.enlight.R;
+import com.fewsteet.enlight.util.MRPCDeviceInfo;
+
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
+
 
 /**
  * Created by peter on 11/13/16.
@@ -25,6 +25,8 @@ import java.util.SortedSet;
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder> {
 
     private Map<String, MRPCDeviceInfo> mDataset;
+    private Context ctx;
+    private String TAG = "DeviceListAdapter";
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -33,16 +35,19 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         // each data item is just a string in this case
         public TextView mUUIDTV;
         public ListView mGroupsListView;
+        public Button mOptionsButton;
         public ViewHolder(View v) {
             super(v);
             mUUIDTV = (TextView)v.findViewById(R.id.deviceUUID);
+            mOptionsButton = (Button)v.findViewById(R.id.device_options);
             mGroupsListView = (ListView)v.findViewById(R.id.deviceGroups);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DeviceListAdapter(Map<String, MRPCDeviceInfo> myDataset) {
+    public DeviceListAdapter(Map<String, MRPCDeviceInfo> myDataset, Context ctx) {
         mDataset = myDataset;
+        this.ctx = ctx;
     }
 
     // Create new views (invoked by the layout manager)
@@ -67,10 +72,13 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         for (MRPCDeviceInfo item:mDataset.values()) {
             if(i==position) {
                 holder.mUUIDTV.setText(item.uuid);
-                String[] from = { "name", "purpose" };
-                int[] to = { android.R.id.text1, android.R.id.text2 };
-                holder.mGroupsListView.setAdapter(new SimpleAdapter(this, item.aliases,
-                        R.layout.view_group_item, from, to););
+                holder.mOptionsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG, "clicked options button");
+                    }
+                });
+                holder.mGroupsListView.setAdapter(new GroupListAdapter(ctx, item.aliases));
                 break;
             }
             i++;

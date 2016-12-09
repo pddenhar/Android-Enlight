@@ -3,6 +3,7 @@ package com.fewsteet.enlight;
 import android.app.Application;
 import android.content.Context;
 
+import com.fewsteet.enlight.util.Util;
 import com.google.gson.reflect.TypeToken;
 
 import net.vector57.mrpc.MRPC;
@@ -36,5 +37,9 @@ public class EnlightApp extends Application {
             mrpc = new MRPC(context, pathCache);
         }
         return mrpc;
+    }
+    public static void storeApplicationState() {
+        Map<String, List<String>> pathCache = EnlightApp.MRPC().getPathCache();
+        Util.writeToFile(context, EnlightApp.PATH_CACHE_FILENAME, pathCache);
     }
 }

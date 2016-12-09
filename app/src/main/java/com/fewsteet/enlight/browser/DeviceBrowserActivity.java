@@ -1,4 +1,4 @@
-package com.fewsteet.enlight;
+package com.fewsteet.enlight.browser;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,26 +10,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.gson.JsonElement;
+import com.fewsteet.enlight.EnlightApp;
+import com.fewsteet.enlight.R;
+import com.fewsteet.enlight.util.MRPCDeviceInfo;
+import com.fewsteet.enlight.util.Util;
 import com.google.gson.reflect.TypeToken;
 
 import net.vector57.mrpc.MRPC;
 import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import static com.fewsteet.enlight.R.id.devices;
+import java.util.Map;
 
 public class DeviceBrowserActivity extends AppCompatActivity {
     final static String TAG = "DeviceBrowserActivity";
-    private MRPC mrpc;
     private final HashMap<String, MRPCDeviceInfo> devices = new HashMap<String, MRPCDeviceInfo>();
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -49,24 +47,29 @@ public class DeviceBrowserActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new DeviceListAdapter(devices);
+        mAdapter = new DeviceListAdapter(devices, this);
         mRecyclerView.setAdapter(mAdapter);
     }
     @Override
     public void onResume() {
         super.onResume();
         Log.d(TAG, "Starting MRPC");
-        mrpc = new MRPC(getApplicationContext());
-        mrpc.start();
-        findDevices();
+        try {
+            EnlightApp.MRPC().start(Util.getBroadcastAddress(this));
+        } catch (IOException e) {
+            Log.d(TAG, "MRPC start failed.");
+            e.printStackTrace();
+        }
+        findDevices(null);
     }
     @Override
     public void onPause() {
         super.onPause();
+        EnlightApp.storeApplicationState();
+
         try {
             Log.d(TAG, "Closing MRPC");
-            mrpc.close();
-            mrpc = null;
+            EnlightApp.MRPC().close();
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
@@ -84,8 +87,10 @@ public class DeviceBrowserActivity extends AppCompatActivity {
         return;
     }
 
-    public void findDevices() {
-        mrpc.RPC("*.alias", null, new Result.Callback() {
+    public void findDevices(View v) {
+        devices.clear();
+        mAdapter.notifyDataSetChanged();
+        EnlightApp.MRPC().RPC("*.alias", null, new Result.Callback() {
             @Override
             public void onResult(Message.Response response) {
                 if(response.error == null) {
@@ -96,6 +101,7 @@ public class DeviceBrowserActivity extends AppCompatActivity {
                         Log.d(TAG, uuid);
                     }
                     devices.get(uuid).aliases = names;
+                    mAdapter.notifyDataSetChanged();
                 }
             }
         });

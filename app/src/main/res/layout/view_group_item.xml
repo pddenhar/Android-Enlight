@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/group_name"
-        android:layout_weight="1" />
-
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_height="wrap_content"
+android:layout_width="match_parent">
+<TextView
+    android:text="TextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_alignParentLeft="true"
+    android:layout_centerVertical="true"
+    android:id="@+id/group_name" />
     <Button
-        android:text="Add To Home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/add_button"
-        android:layout_weight="1" />
-</LinearLayout>
+        android:drawableLeft="@drawable/ic_add_black_24dp"
+        android:text="Toggle"
+        android:id="@+id/add_to_home_button"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        style="?android:attr/borderlessButtonStyle"/>
+</RelativeLayout>
