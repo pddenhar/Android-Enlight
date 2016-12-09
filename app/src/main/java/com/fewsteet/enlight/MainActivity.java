@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static String TAG = "MainActivity";
-    private ArrayList<String> switches;
+    private ArrayList<ControlItem> switches;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         switches = new ArrayList<>();
-        switches.add("/A.light");
-        switches.add("/B.light");
-        switches.add("*.light");
+        switches.add(new ControlItem("Front", "/A.light"));
+        switches.add(new ControlItem("Couch", "/B.light"));
+        switches.add(new ControlItem("All Lights", "*.light"));
 
         mRecyclerView = (RecyclerView) findViewById(R.id.enlight_controls_list);
         mRecyclerView.setHasFixedSize(true);
@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
-
     }
     @Override
     public void onResume() {
@@ -76,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "MRPC start failed.");
             e.printStackTrace();
         }
+        updateControls();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,6 +83,24 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
         return true;
+    }
+
+    private void updateControls() {
+        for (final ControlItem item: switches) {
+            final String path = item.path;
+            Log.d(TAG, "Sending message for " + path);
+            EnlightApp.MRPC().RPC(path, null, new Result.Callback() {
+                @Override
+                public void onSuccess(JsonElement value) {
+                    Log.d(TAG, "Got result for path " + path);
+                    Boolean b = Message.gson().fromJson(value, Boolean.class);
+                    if (b != null) {
+                        item.state=b;
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
     }
 
     public void launchSettings(MenuItem item) {

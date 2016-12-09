@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 
 public class ControlListAdapter extends RecyclerView.Adapter <ControlListAdapter.ViewHolder> {
-    private ArrayList<String> paths;
+    private ArrayList<ControlItem> control_items;
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView group_label;
@@ -30,8 +30,8 @@ public class ControlListAdapter extends RecyclerView.Adapter <ControlListAdapter
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ControlListAdapter(ArrayList<String> paths) {
-        this.paths = paths;
+    public ControlListAdapter(ArrayList<ControlItem> control_items) {
+        this.control_items = control_items;
     }
 
     // Create new views (invoked by the layout manager)
@@ -50,14 +50,13 @@ public class ControlListAdapter extends RecyclerView.Adapter <ControlListAdapter
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ControlListAdapter.ViewHolder holder, final int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.group_label.setText(paths.get(position));
+        holder.group_label.setText(control_items.get(position).name);
+        holder.group_toggle.setChecked(control_items.get(position).state);
         holder.group_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MRPC mrpc = EnlightApp.MRPC();
-                mrpc.RPC(paths.get(position), isChecked);
+                mrpc.RPC(control_items.get(position).path, isChecked);
             }
         });
     }
@@ -65,7 +64,7 @@ public class ControlListAdapter extends RecyclerView.Adapter <ControlListAdapter
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return paths.size();
+        return control_items.size();
     }
 
 }
