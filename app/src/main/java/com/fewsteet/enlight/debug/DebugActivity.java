@@ -16,6 +16,7 @@ import com.fewsteet.enlight.EnlightApp;
 import com.fewsteet.enlight.R;
 import com.fewsteet.enlight.util.Util;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
@@ -54,10 +55,9 @@ public class DebugActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 responseView.setText("");
-
                 EnlightApp.MRPC().RPC(
                         getIntent().getStringExtra(GUID_KEY) + "." + functionList.getSelectedItem(),
-                        requestView.getText().toString(),
+                        new JsonParser().parse(requestView.getText().toString()),
                         new Result.Callback() {
                             @Override
                             public void onResult(Message.Response response) {

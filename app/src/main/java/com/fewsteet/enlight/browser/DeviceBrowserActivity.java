@@ -86,7 +86,6 @@ public class DeviceBrowserActivity extends AppCompatActivity {
                     ArrayList<String> names = Message.gson().fromJson(response.result, new TypeToken<ArrayList<String>>(){}.getType());
                     if(!devices.containsKey(uuid)) {
                         devices.put(uuid, new MRPCDeviceInfo(uuid));
-                        Log.d(TAG, uuid);
                     }
                     devices.get(uuid).aliases = names;
                     mAdapter.setData(devices.values());
