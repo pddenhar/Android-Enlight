@@ -76,18 +76,6 @@ public class DeviceBrowserActivity extends AppCompatActivity {
             ie.printStackTrace();
         }
     }
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
-        return true;
-    }
-    public void launchSettings(MenuItem v) {
-        return;
-    }
-    public void launchDevices(MenuItem v) {
-        return;
-    }
 
     public void findDevices(View v) {
         devices.clear();
