@@ -30,7 +30,7 @@ public class DeviceBrowserActivity extends AppCompatActivity {
     final static String TAG = "DeviceBrowserActivity";
     private final HashMap<String, MRPCDeviceInfo> devices = new HashMap<String, MRPCDeviceInfo>();
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private DeviceListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class DeviceBrowserActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new DeviceListAdapter(devices, this);
+        mAdapter = new DeviceListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
     }
     @Override
@@ -89,7 +89,7 @@ public class DeviceBrowserActivity extends AppCompatActivity {
 
     public void findDevices(View v) {
         devices.clear();
-        mAdapter.notifyDataSetChanged();
+        mAdapter.setData(devices.values());
         EnlightApp.MRPC().RPC("*.alias", null, new Result.Callback() {
             @Override
             public void onResult(Message.Response response) {
@@ -101,7 +101,7 @@ public class DeviceBrowserActivity extends AppCompatActivity {
                         Log.d(TAG, uuid);
                     }
                     devices.get(uuid).aliases = names;
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.setData(devices.values());
                 }
             }
         });

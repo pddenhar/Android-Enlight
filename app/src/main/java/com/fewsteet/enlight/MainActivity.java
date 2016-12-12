@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static String TAG = "MainActivity";
@@ -116,8 +115,10 @@ public class MainActivity extends AppCompatActivity {
     public void launchSettings(MenuItem item) {
         return;
     }
+
     public void launchDevices(MenuItem item) {
         Intent i = new Intent(this, DeviceBrowserActivity.class);
         this.startActivity(i);
     }
+
 }
