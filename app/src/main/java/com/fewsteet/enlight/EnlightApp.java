@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.fewsteet.enlight.util.Util;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import net.vector57.mrpc.MRPC;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class EnlightApp extends Application {
     private static Context context;
     private static MRPC mrpc;
+    private static Gson gson;
     public static final String PATH_CACHE_FILENAME = "path_cache.json";
     public static final String LAYOUT_CONFIG_FILENAME = "layout_config.json";
 
@@ -26,8 +28,6 @@ public class EnlightApp extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-        Type t = new TypeToken<Map<String, List<String>>>() {}.getType();
-        Map<String, List<String>> pathCache = Util.readFromFile(this, PATH_CACHE_FILENAME, t);
     }
 
     public static synchronized MRPC MRPC() {
@@ -37,6 +37,12 @@ public class EnlightApp extends Application {
             mrpc = new MRPC(context, pathCache);
         }
         return mrpc;
+    }
+    public static synchronized Gson Gson() {
+        if(gson == null) {
+            gson = new Gson();
+        }
+        return gson;
     }
     public static void storeApplicationState() {
         Map<String, List<String>> pathCache = EnlightApp.MRPC().getPathCache();

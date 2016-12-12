@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Enlight</string>
+    <string name="layout_preference_key">layoutjson</string>
 </resources>

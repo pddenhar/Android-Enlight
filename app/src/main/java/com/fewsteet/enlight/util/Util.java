@@ -5,6 +5,7 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import com.fewsteet.enlight.EnlightApp;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -68,9 +69,8 @@ public class Util {
         catch (IOException e) {
             return null;
         }
-        Gson gson = new Gson();
         Log.d("Util", ret);
-        return gson.fromJson(ret, t);
+        return EnlightApp.Gson().fromJson(ret, t);
     }
     public static void writeToFile(Context context, String filename, Object contents) {
         try {

@@ -1,6 +1,8 @@
 package com.fewsteet.enlight;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,11 +15,13 @@ import android.view.MenuItem;
 import com.fewsteet.enlight.browser.DeviceBrowserActivity;
 import com.fewsteet.enlight.util.Util;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
 import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         switches = new ArrayList<>();
-        switches.add(new ControlItem("Front", "/A.light"));
-        switches.add(new ControlItem("Couch", "/B.light"));
-        switches.add(new ControlItem("All Lights", "*.light"));
 
         mRecyclerView = (RecyclerView) findViewById(R.id.enlight_controls_list);
         mRecyclerView.setHasFixedSize(true);
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "MRPC start failed.");
             e.printStackTrace();
         }
+        updateSwitchesFromPrefs();
         updateControls();
     }
 
@@ -73,6 +75,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void updateSwitchesFromPrefs() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String layoutJson = sharedPref.getString(getString(R.string.layout_preference_key), "[[\"All Lights\", \"*.light\"]]");
+
+        Type t = new TypeToken<List<List<String>>>() {}.getType();
+        List<List<String>> layout = EnlightApp.Gson().fromJson(layoutJson, t);
+        switches.clear();
+        for(List<String> item: layout) {
+            switches.add(new ControlItem(item.get(0), item.get(1)));
+        }
+        mAdapter.notifyDataSetChanged();
+    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
 
