@@ -43,7 +43,7 @@ public class GroupListAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Add toggle clicked");
-                act.addSwitch(group, group);
+                act.addSwitch(group, "/" + group +".light");
 
             }
         });

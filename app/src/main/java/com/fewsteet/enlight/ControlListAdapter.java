@@ -61,7 +61,7 @@ public class ControlListAdapter extends RecyclerView.Adapter <ControlListAdapter
                 mrpc.RPC(control_items.get(position).path, isChecked);
             }
         });
-        
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

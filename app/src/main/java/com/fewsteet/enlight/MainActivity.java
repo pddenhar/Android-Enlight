@@ -111,8 +111,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void launchSettings(MenuItem item) {
-        return;
+    public void clearLayout(MenuItem item) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        sharedPref.edit().remove(getString(R.string.layout_preference_key)).commit();
+        updateSwitchesFromPrefs();
     }
 
     public void launchDevices(MenuItem item) {
