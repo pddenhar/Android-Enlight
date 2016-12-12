@@ -53,6 +53,7 @@ public class ControlListAdapter extends RecyclerView.Adapter <ControlListAdapter
     @Override
     public void onBindViewHolder(ControlListAdapter.ViewHolder holder, final int position) {
         holder.group_label.setText(control_items.get(position).name);
+        holder.group_toggle.setOnCheckedChangeListener(null);
         holder.group_toggle.setChecked(control_items.get(position).state);
         holder.group_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
