@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -33,6 +34,8 @@ public class DebugActivity extends AppCompatActivity {
         return new Intent(caller, DebugActivity.class).putExtra(GUID_KEY, guid);
     }
 
+    private ProgressBar progressBar;
+    private View content;
     private Spinner functionList;
 
     @Override
@@ -40,6 +43,8 @@ public class DebugActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug);
 
+        progressBar = (ProgressBar) findViewById(R.id.debug_progress);
+        content = findViewById(R.id.debug_content);
         functionList = (Spinner) findViewById(R.id.function_spinner);
 
         final TextView requestView = (TextView) findViewById(R.id.request);
@@ -84,8 +89,10 @@ public class DebugActivity extends AppCompatActivity {
         EnlightApp.MRPC().RPC(getIntent().getStringExtra(GUID_KEY) + ".configure_service", null, new Result.Callback() {
             @Override
             public void onResult(Message.Response response) {
-                Log.d(LOGTAG, "Response received");
+                progressBar.setVisibility(View.GONE);
                 super.onResult(response);
+                content.setVisibility(View.VISIBLE);
+
             }
             @Override
             public void onSuccess(JsonElement value) {
