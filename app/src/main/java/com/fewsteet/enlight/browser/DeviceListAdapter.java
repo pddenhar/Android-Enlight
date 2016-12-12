@@ -15,7 +15,6 @@ import com.fewsteet.enlight.util.MRPCDeviceInfo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by peter on 11/13/16.

@@ -1,5 +1,7 @@
 package com.fewsteet.enlight.browser;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,21 +12,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.fewsteet.enlight.ControlItem;
 import com.fewsteet.enlight.EnlightApp;
 import com.fewsteet.enlight.R;
 import com.fewsteet.enlight.util.MRPCDeviceInfo;
 import com.fewsteet.enlight.util.Util;
 import com.google.gson.reflect.TypeToken;
 
-import net.vector57.mrpc.MRPC;
 import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DeviceBrowserActivity extends AppCompatActivity {
     final static String TAG = "DeviceBrowserActivity";
@@ -105,5 +107,16 @@ public class DeviceBrowserActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    public void addSwitch(String name, String path) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String layoutJson = sharedPref.getString(getString(R.string.layout_preference_key), getString(R.string.default_layout));
+
+        Type t = new TypeToken<List<ControlItem>>() {}.getType();
+        List<ControlItem> layout = EnlightApp.Gson().fromJson(layoutJson, t);
+        layout.add(new ControlItem(name, path));
+        String json = EnlightApp.Gson().toJson(layout);
+        Log.d(TAG, json);
+        sharedPref.edit().putString(getString(R.string.layout_preference_key),json).apply();
     }
 }

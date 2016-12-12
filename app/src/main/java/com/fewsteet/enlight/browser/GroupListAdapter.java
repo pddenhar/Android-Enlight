@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fewsteet.enlight.MainActivity;
 import com.fewsteet.enlight.R;
 
 import java.util.ArrayList;
@@ -20,15 +21,17 @@ import java.util.ArrayList;
 
 public class GroupListAdapter extends ArrayAdapter<String> {
     private final String TAG = "GroupListAdapter";
+    private static DeviceBrowserActivity act;
 
-    public GroupListAdapter(Context context, ArrayList<String> users) {
+    public GroupListAdapter(DeviceBrowserActivity context, ArrayList<String> users) {
         super(context, 0, users);
+        this.act = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        String group = getItem(position);
+        final String group = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.view_group_item, parent, false);
@@ -40,6 +43,8 @@ public class GroupListAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Add toggle clicked");
+                act.addSwitch(group, group);
+
             }
         });
         // Populate the data into the template view using the data object
