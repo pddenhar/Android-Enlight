@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Enlight</string>
     <string name="layout_preference_key">layoutjson</string>
+    <string name="default_layout">[{\"name\":\"All Lights\", \"path\":\"*.light\"}]</string>
 </resources>

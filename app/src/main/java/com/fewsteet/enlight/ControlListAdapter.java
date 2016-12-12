@@ -20,12 +20,14 @@ public class ControlListAdapter extends RecyclerView.Adapter <ControlListAdapter
     private ArrayList<ControlItem> control_items;
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        public View view;
         public TextView group_label;
         public ToggleButton group_toggle;
         public ViewHolder(View v) {
             super(v);
             group_label = (TextView)v.findViewById(R.id.group_label);
             group_toggle = (ToggleButton)v.findViewById(R.id.group_toggle);
+            view=v;
         }
     }
 
@@ -59,6 +61,7 @@ public class ControlListAdapter extends RecyclerView.Adapter <ControlListAdapter
                 mrpc.RPC(control_items.get(position).path, isChecked);
             }
         });
+        
     }
 
     // Return the size of your dataset (invoked by the layout manager)

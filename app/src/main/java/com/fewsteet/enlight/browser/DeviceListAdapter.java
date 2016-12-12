@@ -25,7 +25,7 @@ import java.util.Map;
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder> {
 
     private Map<String, MRPCDeviceInfo> mDataset;
-    private Context ctx;
+    private DeviceBrowserActivity ctx;
     private String TAG = "DeviceListAdapter";
 
     // Provide a reference to the views for each data item
@@ -45,7 +45,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DeviceListAdapter(Map<String, MRPCDeviceInfo> myDataset, Context ctx) {
+    public DeviceListAdapter(Map<String, MRPCDeviceInfo> myDataset, DeviceBrowserActivity ctx) {
         mDataset = myDataset;
         this.ctx = ctx;
     }

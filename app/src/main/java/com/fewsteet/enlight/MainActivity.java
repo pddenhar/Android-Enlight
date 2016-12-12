@@ -3,6 +3,7 @@ package com.fewsteet.enlight;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -76,15 +77,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateSwitchesFromPrefs() {
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        String layoutJson = sharedPref.getString(getString(R.string.layout_preference_key), "[[\"All Lights\", \"*.light\"]]");
-
-        Type t = new TypeToken<List<List<String>>>() {}.getType();
-        List<List<String>> layout = EnlightApp.Gson().fromJson(layoutJson, t);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String layoutJson = sharedPref.getString(getString(R.string.layout_preference_key), getString(R.string.default_layout));
+        Log.d(TAG, layoutJson);
+        Type t = new TypeToken<List<ControlItem>>() {}.getType();
+        List<ControlItem> layout = EnlightApp.Gson().fromJson(layoutJson, t);
         switches.clear();
-        for(List<String> item: layout) {
-            switches.add(new ControlItem(item.get(0), item.get(1)));
-        }
+        switches.addAll(layout);
         mAdapter.notifyDataSetChanged();
     }
 
