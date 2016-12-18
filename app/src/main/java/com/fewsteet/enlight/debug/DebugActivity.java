@@ -79,12 +79,6 @@ public class DebugActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(LOGTAG, "Starting MRPC");
-        try {
-            EnlightApp.MRPC().start(Util.getBroadcastAddress(this));
-        } catch (IOException e) {
-            throw new RuntimeException("MRPC start failed.", e);
-        }
 
         EnlightApp.MRPC().RPC(getIntent().getStringExtra(GUID_KEY) + ".configure_service", null, new Result.Callback() {
             @Override
@@ -113,13 +107,6 @@ public class DebugActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         EnlightApp.storeApplicationState();
-
-        try {
-            Log.d(LOGTAG, "Closing MRPC");
-            EnlightApp.MRPC().close();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
     }
 
 }

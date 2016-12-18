@@ -51,13 +51,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "Starting MRPC");
-        try {
-            EnlightApp.MRPC().start(Util.getBroadcastAddress(this));
-        } catch (IOException e) {
-            Log.d(TAG, "MRPC start failed.");
-            e.printStackTrace();
-        }
         updateSwitchesFromPrefs();
         updateControls();
     }
@@ -67,12 +60,8 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         EnlightApp.storeApplicationState();
 
-        try {
-            Log.d(TAG, "Closing MRPC");
-            EnlightApp.MRPC().close();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
+        Log.d(TAG, "Closing MRPC");
+        EnlightApp.CloseMRPC();
     }
 
     public void updateSwitchesFromPrefs() {

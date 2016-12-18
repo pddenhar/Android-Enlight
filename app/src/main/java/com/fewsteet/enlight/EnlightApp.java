@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 
 import net.vector57.mrpc.MRPC;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,24 @@ public class EnlightApp extends Application {
         context = getApplicationContext();
     }
 
+    public static synchronized void CloseMRPC() {
+        try {
+            mrpc.close();
+            mrpc = null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     public static synchronized MRPC MRPC() {
         if(mrpc == null) {
             Type t = new TypeToken<Map<String, List<String>>>() {}.getType();
             Map<String, List<String>> pathCache = Util.readFromFile(context, PATH_CACHE_FILENAME, t);
-            mrpc = new MRPC(context, pathCache);
+
+            try {
+                mrpc = new MRPC(context, Util.getBroadcastAddress(context), pathCache);
+            } catch (IOException e) {
+                return null;
+            }
         }
         return mrpc;
     }

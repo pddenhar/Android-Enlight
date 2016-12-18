@@ -53,26 +53,12 @@ public class DeviceBrowserActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "Starting MRPC");
-        try {
-            EnlightApp.MRPC().start(Util.getBroadcastAddress(this));
-        } catch (IOException e) {
-            Log.d(TAG, "MRPC start failed.");
-            e.printStackTrace();
-        }
         findDevices(null);
     }
     @Override
     public void onPause() {
         super.onPause();
         EnlightApp.storeApplicationState();
-
-        try {
-            Log.d(TAG, "Closing MRPC");
-            EnlightApp.MRPC().close();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
     }
 
     public void findDevices(View v) {
