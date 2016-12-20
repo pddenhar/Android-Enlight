@@ -26,7 +26,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MRPCActivity {
     private static String TAG = "MainActivity";
     private ArrayList<ControlItem> switches;
     private RecyclerView mRecyclerView;
@@ -55,15 +55,6 @@ public class MainActivity extends AppCompatActivity {
         updateControls();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        EnlightApp.storeApplicationState();
-
-        Log.d(TAG, "Closing MRPC");
-        EnlightApp.CloseMRPC();
-    }
-
     public void updateSwitchesFromPrefs() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String layoutJson = sharedPref.getString(getString(R.string.layout_preference_key), getString(R.string.default_layout));
@@ -82,21 +73,29 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void updateToggle(final ControlItem item) {
+        final String path = item.path;
+        Log.d(TAG, "Sending message for " + path);
+        mrpc(path, null, new Result.Callback() {
+            @Override
+            public void onSuccess(JsonElement value) {
+                Log.d(TAG, "Got result for path " + path);
+                Boolean b = Message.gson().fromJson(value, Boolean.class);
+                if (b != null) {
+                    item.state=b;
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
     private void updateControls() {
         for (final ControlItem item: switches) {
-            final String path = item.path;
-            Log.d(TAG, "Sending message for " + path);
-            EnlightApp.MRPC().RPC(path, null, new Result.Callback() {
-                @Override
-                public void onSuccess(JsonElement value) {
-                    Log.d(TAG, "Got result for path " + path);
-                    Boolean b = Message.gson().fromJson(value, Boolean.class);
-                    if (b != null) {
-                        item.state=b;
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            switch(item.type) {
+                case toggle:
+                    updateToggle(item);
+                    break;
+            }
         }
     }
 

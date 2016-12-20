@@ -30,36 +30,10 @@ public class EnlightApp extends Application {
         super.onCreate();
         context = getApplicationContext();
     }
-
-    public static synchronized void CloseMRPC() {
-        try {
-            mrpc.close();
-            mrpc = null;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    public static synchronized MRPC MRPC() {
-        if(mrpc == null) {
-            Type t = new TypeToken<Map<String, List<String>>>() {}.getType();
-            Map<String, List<String>> pathCache = Util.readFromFile(context, PATH_CACHE_FILENAME, t);
-
-            try {
-                mrpc = new MRPC(context, Util.getBroadcastAddress(context), pathCache);
-            } catch (IOException e) {
-                return null;
-            }
-        }
-        return mrpc;
-    }
     public static synchronized Gson Gson() {
         if(gson == null) {
             gson = new Gson();
         }
         return gson;
-    }
-    public static void storeApplicationState() {
-        Map<String, List<String>> pathCache = EnlightApp.MRPC().getPathCache();
-        Util.writeToFile(context, EnlightApp.PATH_CACHE_FILENAME, pathCache);
     }
 }
