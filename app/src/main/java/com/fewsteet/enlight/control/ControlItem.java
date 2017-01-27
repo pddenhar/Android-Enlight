@@ -1,5 +1,6 @@
-package com.fewsteet.enlight;
+package com.fewsteet.enlight.control;
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -9,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class ControlItem {
     public enum ControlType {
         toggle,
+        slider,
         button;
         public static String[] names() {
             ControlType[] states = values();
@@ -21,10 +23,10 @@ public class ControlItem {
             return names;
         }
     }
-    String path;
-    String name;
-    ControlType type;
-    boolean state;
+    public String path;
+    public String name;
+    public ControlType type;
+    public JsonElement state;
 
     public ControlItem(String name, String path, ControlType type) {
         this.name = name;

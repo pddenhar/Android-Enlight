@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.fewsteet.enlight.ControlItem;
+import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.R;
 
 import java.util.ArrayList;

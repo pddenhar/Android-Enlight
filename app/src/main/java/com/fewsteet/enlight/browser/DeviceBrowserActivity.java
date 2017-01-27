@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.fewsteet.enlight.ControlItem;
+import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.EnlightApp;
 import com.fewsteet.enlight.MRPCActivity;
 import com.fewsteet.enlight.R;

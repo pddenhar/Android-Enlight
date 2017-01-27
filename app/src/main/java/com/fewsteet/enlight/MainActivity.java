@@ -1,10 +1,8 @@
 package com.fewsteet.enlight;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,14 +12,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.fewsteet.enlight.browser.DeviceBrowserActivity;
-import com.fewsteet.enlight.util.Util;
+import com.fewsteet.enlight.control.ControlItem;
+import com.fewsteet.enlight.control.ControlListAdapter;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,11 +77,8 @@ public class MainActivity extends MRPCActivity {
             @Override
             public void onSuccess(JsonElement value) {
                 Log.d(TAG, "Got result for path " + path);
-                Boolean b = Message.gson().fromJson(value, Boolean.class);
-                if (b != null) {
-                    item.state=b;
-                    mAdapter.notifyDataSetChanged();
-                }
+                item.state = value;
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
