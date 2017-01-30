@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 
 import net.vector57.mrpc.MRPC;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -29,23 +30,10 @@ public class EnlightApp extends Application {
         super.onCreate();
         context = getApplicationContext();
     }
-
-    public static synchronized MRPC MRPC() {
-        if(mrpc == null) {
-            Type t = new TypeToken<Map<String, List<String>>>() {}.getType();
-            Map<String, List<String>> pathCache = Util.readFromFile(context, PATH_CACHE_FILENAME, t);
-            mrpc = new MRPC(context, pathCache);
-        }
-        return mrpc;
-    }
     public static synchronized Gson Gson() {
         if(gson == null) {
             gson = new Gson();
         }
         return gson;
-    }
-    public static void storeApplicationState() {
-        Map<String, List<String>> pathCache = EnlightApp.MRPC().getPathCache();
-        Util.writeToFile(context, EnlightApp.PATH_CACHE_FILENAME, pathCache);
     }
 }

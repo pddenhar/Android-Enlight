@@ -1,7 +1,6 @@
 package com.fewsteet.enlight.browser;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 
 import com.fewsteet.enlight.R;
 import com.fewsteet.enlight.debug.DebugActivity;
-import com.fewsteet.enlight.util.MRPCDeviceInfo;
+import com.fewsteet.enlight.util.MRPCResponses;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder> {
 
-    private List<MRPCDeviceInfo> mDataset;
+    private List<MRPCResponses.DeviceInfo> mDataset;
     private DeviceBrowserActivity browserActivity;
     private String TAG = "DeviceListAdapter";
 
@@ -48,7 +47,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         this.browserActivity = browserActivity;
     }
 
-    public void setData(Collection<MRPCDeviceInfo> data) {
+    public void setData(Collection<MRPCResponses.DeviceInfo> data) {
         mDataset = new ArrayList<>(data);
         notifyDataSetChanged();
     }
@@ -72,7 +71,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-        final MRPCDeviceInfo item = mDataset.get(position);
+        final MRPCResponses.DeviceInfo item = mDataset.get(position);
 
         holder.mUUIDTV.setText(item.uuid);
         holder.mOptionsButton.setOnClickListener(new View.OnClickListener() {

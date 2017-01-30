@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.fewsteet.enlight.EnlightApp;
+import com.fewsteet.enlight.MRPCActivity;
 import com.fewsteet.enlight.R;
 import com.fewsteet.enlight.util.Util;
 import com.google.gson.JsonElement;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DebugActivity extends AppCompatActivity {
+public class DebugActivity extends MRPCActivity {
 
     private static final String LOGTAG = "DebugActivity";
     private static final String GUID_KEY = "GUID";
@@ -55,7 +56,7 @@ public class DebugActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 responseView.setText("");
-                EnlightApp.MRPC().RPC(
+                mrpc(
                         getIntent().getStringExtra(GUID_KEY) + "." + functionList.getSelectedItem(),
                         new JsonParser().parse(requestView.getText().toString()),
                         new Result.Callback() {
@@ -79,14 +80,8 @@ public class DebugActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(LOGTAG, "Starting MRPC");
-        try {
-            EnlightApp.MRPC().start(Util.getBroadcastAddress(this));
-        } catch (IOException e) {
-            throw new RuntimeException("MRPC start failed.", e);
-        }
 
-        EnlightApp.MRPC().RPC(getIntent().getStringExtra(GUID_KEY) + ".configure_service", null, new Result.Callback() {
+        mrpc().RPC(getIntent().getStringExtra(GUID_KEY) + ".configure_service", null, new Result.Callback() {
             @Override
             public void onResult(Message.Response response) {
                 progressBar.setVisibility(View.GONE);
@@ -108,18 +103,4 @@ public class DebugActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        EnlightApp.storeApplicationState();
-
-        try {
-            Log.d(LOGTAG, "Closing MRPC");
-            EnlightApp.MRPC().close();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
-    }
-
 }

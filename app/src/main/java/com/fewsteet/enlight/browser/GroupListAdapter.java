@@ -1,6 +1,7 @@
 package com.fewsteet.enlight.browser;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fewsteet.enlight.EnlightApp;
 import com.fewsteet.enlight.MainActivity;
 import com.fewsteet.enlight.R;
+import com.fewsteet.enlight.util.MRPCResponses;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
+
+import net.vector57.mrpc.Result;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by peter on 12/9/16.
@@ -42,8 +50,22 @@ public class GroupListAdapter extends ArrayAdapter<String> {
         addHomeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                act.mrpc("/" + group + ".configure_service", null, new Result.Callback() {
+                    @Override
+                    public void onSuccess(JsonElement value) {
+                        super.onSuccess(value);
+                        HashMap<String, MRPCResponses.ServiceInfo> services =
+                                EnlightApp.Gson().fromJson(value, new TypeToken<HashMap<String, MRPCResponses.ServiceInfo>>(){}.getType());
+                        Bundle args = new Bundle();
+                        args.putStringArrayList("services", new ArrayList<String>(services.keySet()));
+                        args.putString("name", group);
+                        AddControlDialog dialog = new AddControlDialog();
+                        dialog.setArguments(args);
+                        dialog.show(act.getFragmentManager(), "herp");
+                    }
+                });
                 Log.d(TAG, "Add toggle clicked");
-                act.addSwitch(group, "/" + group +".light");
+                //act.addControl(group, "/" + group +".light");
 
             }
         });

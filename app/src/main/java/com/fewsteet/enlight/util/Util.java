@@ -30,14 +30,15 @@ public class Util {
 
         InetAddress inetAddress = InetAddress.getByAddress(extractBytes(dhcp.ipAddress));
         NetworkInterface networkInterface = NetworkInterface.getByInetAddress(inetAddress);
-        InetAddress broadcast;
-        for (InterfaceAddress address : networkInterface.getInterfaceAddresses()) {
-            if(address.getAddress().equals(inetAddress)) {
-                return address.getBroadcast();
+        if(networkInterface != null) {
+            for (InterfaceAddress address : networkInterface.getInterfaceAddresses()) {
+                if (address.getAddress().equals(inetAddress)) {
+                    return address.getBroadcast();
+                }
             }
         }
 
-        return InetAddress.getByName("255.255.255.255");
+        return null;
     }
     private static byte[] extractBytes(int addr) {
         byte[] quads = new byte[4];

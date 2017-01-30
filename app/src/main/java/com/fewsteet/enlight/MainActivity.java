@@ -1,10 +1,8 @@
 package com.fewsteet.enlight;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,19 +12,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.fewsteet.enlight.browser.DeviceBrowserActivity;
-import com.fewsteet.enlight.util.Util;
+import com.fewsteet.enlight.control.ControlItem;
+import com.fewsteet.enlight.control.ControlListAdapter;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MRPCActivity {
     private static String TAG = "MainActivity";
     private ArrayList<ControlItem> switches;
     private RecyclerView mRecyclerView;
@@ -51,28 +48,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "Starting MRPC");
-        try {
-            EnlightApp.MRPC().start(Util.getBroadcastAddress(this));
-        } catch (IOException e) {
-            Log.d(TAG, "MRPC start failed.");
-            e.printStackTrace();
-        }
         updateSwitchesFromPrefs();
         updateControls();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        EnlightApp.storeApplicationState();
-
-        try {
-            Log.d(TAG, "Closing MRPC");
-            EnlightApp.MRPC().close();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
     }
 
     public void updateSwitchesFromPrefs() {
@@ -93,21 +70,26 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void updateToggle(final ControlItem item) {
+        final String path = item.path;
+        Log.d(TAG, "Sending message for " + path);
+        mrpc(path, null, new Result.Callback() {
+            @Override
+            public void onSuccess(JsonElement value) {
+                Log.d(TAG, "Got result for path " + path);
+                item.state = value;
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     private void updateControls() {
         for (final ControlItem item: switches) {
-            final String path = item.path;
-            Log.d(TAG, "Sending message for " + path);
-            EnlightApp.MRPC().RPC(path, null, new Result.Callback() {
-                @Override
-                public void onSuccess(JsonElement value) {
-                    Log.d(TAG, "Got result for path " + path);
-                    Boolean b = Message.gson().fromJson(value, Boolean.class);
-                    if (b != null) {
-                        item.state=b;
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            switch(item.type) {
+                case toggle:
+                    updateToggle(item);
+                    break;
+            }
         }
     }
 
