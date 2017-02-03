@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.EnlightApp;
-import com.fewsteet.enlight.MRPCActivity;
+import net.vector57.android.mrpc.MRPCActivity;
 import com.fewsteet.enlight.R;
 import com.fewsteet.enlight.util.MRPCResponses;
 import com.google.gson.reflect.TypeToken;

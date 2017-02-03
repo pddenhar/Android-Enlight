@@ -28,6 +28,10 @@ public class ControlItem {
     public ControlType type;
     public JsonElement state;
 
+    public ControlItem() {
+        this.type = ControlType.toggle;
+    }
+
     public ControlItem(String name, String path, ControlType type) {
         this.name = name;
         this.path = path;

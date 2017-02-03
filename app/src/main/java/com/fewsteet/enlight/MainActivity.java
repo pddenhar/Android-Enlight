@@ -17,6 +17,7 @@ import com.fewsteet.enlight.control.ControlListAdapter;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import net.vector57.android.mrpc.MRPCActivity;
 import net.vector57.mrpc.Result;
 
 import java.lang.reflect.Type;

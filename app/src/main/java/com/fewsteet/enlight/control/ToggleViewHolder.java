@@ -2,10 +2,9 @@ package com.fewsteet.enlight.control;
 
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.fewsteet.enlight.MRPCActivity;
+import net.vector57.android.mrpc.MRPCActivity;
 import com.fewsteet.enlight.R;
 
 import net.vector57.mrpc.MRPC;

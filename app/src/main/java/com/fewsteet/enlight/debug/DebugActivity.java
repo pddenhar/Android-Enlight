@@ -3,26 +3,21 @@ package com.fewsteet.enlight.debug;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.fewsteet.enlight.EnlightApp;
-import com.fewsteet.enlight.MRPCActivity;
+import net.vector57.android.mrpc.MRPCActivity;
 import com.fewsteet.enlight.R;
-import com.fewsteet.enlight.util.Util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
