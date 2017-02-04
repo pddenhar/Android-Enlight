@@ -28,8 +28,7 @@ public class ToggleViewHolder extends ControlListAdapter.ControlViewHolder {
         group_toggle.setOnCheckedChangeListener(null);
         Boolean checked = Message.gson().fromJson(item.state, Boolean.class);
 
-        if(checked != null)
-            group_toggle.setChecked(checked);
+        group_toggle.setChecked(checked != null && checked);
 
         group_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
