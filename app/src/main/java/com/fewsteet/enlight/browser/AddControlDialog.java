@@ -22,12 +22,13 @@ import java.util.ArrayList;
 public class AddControlDialog extends DialogFragment {
     Spinner functionList;
     Spinner controlType;
+    Spinner nameList;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final DeviceBrowserActivity act = (DeviceBrowserActivity)getActivity();
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        final String name = getArguments().getString("name");
+        final ArrayList<String> names = getArguments().getStringArrayList("names");
         ArrayList<String> services = getArguments().getStringArrayList("services");
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -35,6 +36,7 @@ public class AddControlDialog extends DialogFragment {
         builder.setView(view)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                    String name = (String)nameList.getSelectedItem();
                     act.addControl(name, "/" + name + "." + (String)functionList.getSelectedItem(),
                             ControlItem.ControlType.values()[(int)controlType.getSelectedItemId()]);
                     }
@@ -43,8 +45,13 @@ public class AddControlDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
+        nameList = (Spinner) view.findViewById(R.id.path_name_spinner);
         functionList = (Spinner) view.findViewById(R.id.service_spinner);
         controlType = (Spinner) view.findViewById(R.id.type_spinner);
+
+        ArrayAdapter<String> pathNameAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, names);
+        pathNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        nameList.setAdapter(pathNameAdapter);
 
         ArrayAdapter<String> functionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, services);
         functionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -54,7 +61,7 @@ public class AddControlDialog extends DialogFragment {
         ArrayAdapter<String> controlTypeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, ControlItem.ControlType.names());
         controlTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         controlType.setAdapter(controlTypeAdapter);
-        // Create the AlertDialog object and return it
+
         return builder.create();
     }
 }

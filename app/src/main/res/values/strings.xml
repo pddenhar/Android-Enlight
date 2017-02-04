@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Enlight</string>
     <string name="layout_preference_key">layoutjson</string>
-    <string name="default_layout">[{\"name\":\"All Lights\", \"path\":\"*.light\", \"type\":\"toggle\"}]</string>
+    <string name="default_layout">[]</string>
+    <string name="default_service_blacklist">["wifi", "alias", "configure_service", "uuid", "reset"]</string>
     <string name="debug">Debug</string>
 </resources>

@@ -21,11 +21,13 @@ import net.vector57.mrpc.Result;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class DeviceBrowserActivity extends MRPCActivity {
     final static String TAG = "DeviceBrowserActivity";
     private final HashMap<String, MRPCResponses.DeviceInfo> devices = new HashMap<String, MRPCResponses.DeviceInfo>();
+    private ArrayList<String> blackListedServices = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private DeviceListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -38,7 +40,7 @@ public class DeviceBrowserActivity extends MRPCActivity {
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(false);
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
@@ -72,6 +74,7 @@ public class DeviceBrowserActivity extends MRPCActivity {
             }
         });
     }
+
     public void addControl(String name, String path, ControlItem.ControlType type) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String layoutJson = sharedPref.getString(getString(R.string.layout_preference_key), getString(R.string.default_layout));
