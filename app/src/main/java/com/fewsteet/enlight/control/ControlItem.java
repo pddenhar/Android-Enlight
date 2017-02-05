@@ -1,18 +1,18 @@
 package com.fewsteet.enlight.control;
 
 import com.google.gson.JsonElement;
-import com.google.gson.annotations.SerializedName;
-
-/**
- * Created by peter on 12/8/16.
- */
 
 public class ControlItem {
+
     public enum ControlType {
         toggle,
         slider,
         button;
+
         public static String[] names() {
+
+
+
             ControlType[] states = values();
             String[] names = new String[states.length];
 
@@ -22,7 +22,9 @@ public class ControlItem {
 
             return names;
         }
+
     }
+
     public String path;
     public String name;
     public ControlType type;
@@ -37,4 +39,5 @@ public class ControlItem {
         this.path = path;
         this.type = type;
     }
+
 }
