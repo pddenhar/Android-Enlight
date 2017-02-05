@@ -1,32 +1,35 @@
 package com.fewsteet.enlight;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.fewsteet.enlight.browser.DeviceBrowserActivity;
 import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.control.ControlListAdapter;
+import com.fewsteet.enlight.util.ControlSwitchDAO;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
 import net.vector57.android.mrpc.MRPCActivity;
 import net.vector57.mrpc.MRPC;
 import net.vector57.mrpc.Result;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public class MainActivity extends MRPCActivity {
 
     private static String TAG = "MainActivity";
 
+    private CoordinatorLayout rootView;
     private RecyclerView recyclerView;
     private List<ControlItem> switches;
 
@@ -35,7 +38,9 @@ public class MainActivity extends MRPCActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        switches = readSwitches();
+        rootView = (CoordinatorLayout) findViewById(R.id.activity_main);
+
+        switches = ControlSwitchDAO.getControls(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.enlight_controls_list);
         recyclerView.setHasFixedSize(true);
@@ -74,6 +79,50 @@ public class MainActivity extends MRPCActivity {
                     }
                 })
         );
+
+        new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, // Drag direction
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT  // Swipe direction
+                ) {
+                    @Override
+                    public boolean onMove(
+                            RecyclerView recyclerView,
+                            RecyclerView.ViewHolder viewHolder,
+                            RecyclerView.ViewHolder target
+                    ) {
+                        int selected = recyclerView.getChildAdapterPosition(viewHolder.itemView);
+                        int moveTo = recyclerView.getChildAdapterPosition(viewHolder.itemView);
+
+                        switches.add(moveTo, switches.remove(selected));
+                        ControlSwitchDAO.saveControls(MainActivity.this, switches);
+
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                        final int index = recyclerView.getChildAdapterPosition(viewHolder.itemView);
+                        final ControlItem removed = switches.get(index);
+
+                        ControlSwitchDAO.removeControl(MainActivity.this, removed);
+                        switches.remove(index);
+                        recyclerView.getAdapter().notifyDataSetChanged();
+
+                        Snackbar.make(rootView, "Deleted switch", Snackbar.LENGTH_LONG)
+                                .setAction("UNDO", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        switches.add(index, removed);
+                                        ControlSwitchDAO.saveControls(MainActivity.this, switches);
+                                        recyclerView.getAdapter().notifyDataSetChanged();
+                                        Snackbar.make(rootView, "Switch Restored", Snackbar.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .show();
+                    }
+        }).attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -104,14 +153,6 @@ public class MainActivity extends MRPCActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private List<ControlItem> readSwitches() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String layoutJson = sharedPref.getString(getString(R.string.layout_preference_key), getString(R.string.default_layout));
-        Log.d(TAG, layoutJson);
-        Type t = new TypeToken<List<ControlItem>>() {}.getType();
-        return EnlightApp.Gson().fromJson(layoutJson, t);
     }
 
     private void updateControls() {
