@@ -90,7 +90,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
 
         final MRPCResponses.DeviceInfo item = mDataset.get(position);
 
-        holder.mUUIDTV.setText(item.uuid);
+        holder.mUUIDTV.setText("UUID: "+item.uuid);
         holder.mOptionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,7 +129,9 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
 
                         Bundle args = new Bundle();
                         args.putStringArrayList("services", new ArrayList<String>(services.keySet()));
-                        args.putStringArrayList("names", item.aliases);
+                        ArrayList aliases = new ArrayList(item.aliases);
+                        aliases.add(item.uuid);
+                        args.putStringArrayList("names", aliases);
                         AddControlDialog dialog = new AddControlDialog();
                         dialog.setArguments(args);
                         dialog.show(browserActivity.getFragmentManager(), "herp");
