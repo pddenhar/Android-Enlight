@@ -97,8 +97,11 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
                 browserActivity.startActivity(DebugActivity.createIntent(browserActivity, item.uuid));
             }
         });
-
-        holder.mDeviceName.setText(item.aliases.get(0));
+        if(item.aliases.size() > 0) {
+            holder.mDeviceName.setText(item.aliases.get(0));
+        } else {
+            holder.mDeviceName.setText("*");
+        }
 
         holder.mAddToHome.setOnClickListener(new View.OnClickListener() {
             @Override
