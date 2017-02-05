@@ -20,5 +20,6 @@
         android:textSize="20sp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/group_label"/>
+        android:layout_below="@id/group_label"
+        android:max="100"/>
 </RelativeLayout>

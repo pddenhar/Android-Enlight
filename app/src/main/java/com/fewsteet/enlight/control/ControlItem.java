@@ -1,18 +1,18 @@
 package com.fewsteet.enlight.control;
 
 import com.google.gson.JsonElement;
-import com.google.gson.annotations.SerializedName;
-
-/**
- * Created by peter on 12/8/16.
- */
 
 public class ControlItem {
+
     public enum ControlType {
         toggle,
         slider,
         button;
+
         public static String[] names() {
+
+
+
             ControlType[] states = values();
             String[] names = new String[states.length];
 
@@ -22,7 +22,9 @@ public class ControlItem {
 
             return names;
         }
+
     }
+
     public String path;
     public String name;
     public ControlType type;
@@ -37,4 +39,28 @@ public class ControlItem {
         this.path = path;
         this.type = type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ControlItem that = (ControlItem) o;
+
+        if (path != null ? !path.equals(that.path) : that.path != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (type != that.type) return false;
+        return state != null ? state.equals(that.state) : that.state == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = path != null ? path.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        return result;
+    }
+
 }
