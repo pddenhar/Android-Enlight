@@ -11,7 +11,8 @@ public class ControlItem {
     public enum ControlType {
         toggle,
         slider,
-        button;
+        button,
+        color;
         public static String[] names() {
             ControlType[] states = values();
             String[] names = new String[states.length];
@@ -37,5 +38,9 @@ public class ControlItem {
         this.name = name;
         this.path = path;
         this.type = type;
+    }
+
+    public boolean isValid() {
+        return path != null && name != null && type != null;
     }
 }

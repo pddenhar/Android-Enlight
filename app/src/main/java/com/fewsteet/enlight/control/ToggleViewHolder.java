@@ -49,12 +49,12 @@ public class ToggleViewHolder extends ControlListAdapter.ControlViewHolder {
 
     @Override
     public void queryControlState(final ControlListAdapter adapter, final ControlItem item) {
-        super.queryControlState(adapter, item);
         final String path = item.path;
         MRPCActivity.mrpc(path, null, new Result.Callback() {
             @Override
             public void onSuccess(JsonElement value) {
                 item.state = value;
+                item.stateQueried = true;
                 setControlItem(adapter, item);
                 adapter.notifyDataSetChanged();
             }

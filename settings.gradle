@@ -5,3 +5,6 @@ project(':mrpc-java').projectDir = new File(settingsDir, '../android-mrpc/mrpc-j
 
 include ':mrpc-android'
 project(':mrpc-android').projectDir = new File(settingsDir, '../android-mrpc/mrpc-android')
+
+include ':colorseekbar'
+project(':colorseekbar').projectDir = new File(settingsDir, 'ColorSeekBar')
