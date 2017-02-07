@@ -12,6 +12,7 @@ import android.widget.Spinner;
 
 import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.R;
+import com.fewsteet.enlight.control.ControlSwitchDAO;
 
 import java.util.ArrayList;
 
@@ -37,8 +38,9 @@ public class AddControlDialog extends DialogFragment {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     String name = (String)nameList.getSelectedItem();
-                    act.addControl(name, "/" + name + "." + (String)functionList.getSelectedItem(),
+                    ControlItem control = new ControlItem(name, "/" + name + "." + (String)functionList.getSelectedItem(),
                             ControlItem.ControlType.values()[(int)controlType.getSelectedItemId()]);
+                    ControlSwitchDAO.addControl(act, control);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

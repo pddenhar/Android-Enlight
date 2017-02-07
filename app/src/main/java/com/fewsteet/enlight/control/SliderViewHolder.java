@@ -22,8 +22,8 @@ public class SliderViewHolder extends ControlListAdapter.ControlViewHolder {
     }
 
     @Override
-    public void SetControlItem(final ControlItem item) {
-        super.SetControlItem(item);
+    public void setControlItem(ControlListAdapter adapter, final ControlItem item) {
+        super.setControlItem(adapter, item);
         group_seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {

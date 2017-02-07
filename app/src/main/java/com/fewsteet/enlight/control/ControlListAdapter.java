@@ -8,74 +8,72 @@ import android.widget.TextView;
 
 import com.fewsteet.enlight.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by peter on 12/8/16.
- */
+public class ControlListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-public class ControlListAdapter extends RecyclerView.Adapter <RecyclerView.ViewHolder> {
-    private ArrayList<ControlItem> control_items;
+    private final List<ControlItem> control_items;
 
-    public static class ControlViewHolder extends RecyclerView.ViewHolder {
-        public View view;
-        public TextView group_label;
-        public ControlViewHolder(View v) {
-            super(v);
-            group_label = (TextView)v.findViewById(R.id.group_label);
-        }
-        public void SetControlItem(ControlItem item) { }
-    }
-
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public ControlListAdapter(ArrayList<ControlItem> control_items) {
+    public ControlListAdapter(List<ControlItem> control_items) {
         this.control_items = control_items;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                      int viewType) {
-        RecyclerView.ViewHolder vh = null;
-        View v;
-        switch (ControlItem.ControlType.values()[viewType]) {
-            case toggle:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.view_toggle_item, parent, false);
-                vh = new ToggleViewHolder(v);
-                break;
-            case slider:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.view_slider_item, parent, false);
-                vh = new SliderViewHolder(v);
-                break;
-            case button:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.view_button_item, parent, false);
-                vh = new ButtonViewHolder(v);
-                break;
-        }
-        return vh;
-    }
-
-    // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        ControlViewHolder cv_holder = (ControlViewHolder)holder;
-        cv_holder.group_label.setText(control_items.get(position).name);
-        cv_holder.SetControlItem(control_items.get(position));
-
+    public int getItemCount() {
+        return control_items.size();
     }
 
     @Override
     public int getItemViewType(int position) {
+        switch (control_items.get(position).type) {
+            case toggle:
+                return R.layout.view_toggle_item;
+            case slider:
+                return R.layout.view_slider_item;
+            case button:
+                return R.layout.view_button_item;
+        }
         return control_items.get(position).type.ordinal();
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
-    public int getItemCount() {
-        return control_items.size();
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        switch (viewType) {
+            case R.layout.view_toggle_item:
+                return new ToggleViewHolder(v);
+            case R.layout.view_slider_item:
+                return new SliderViewHolder(v);
+            case R.layout.view_button_item:
+                return new ButtonViewHolder(v);
+            default:
+                throw new IllegalStateException("Unknown type in onCreateViewHolder");
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        ((ControlViewHolder) holder).setControlItem(this, control_items.get(position));
+    }
+
+    static class ControlViewHolder extends RecyclerView.ViewHolder {
+
+        TextView label;
+
+        ControlViewHolder(View v) {
+            super(v);
+            label = (TextView)v.findViewById(R.id.group_label);
+        }
+
+        protected void setControlItem(ControlListAdapter adapter, ControlItem item) {
+            label.setText(item.name);
+            if(!item.stateQueried) {
+                item.stateQueried = true;
+                queryControlState(adapter, item);
+            }
+        }
+
+        protected void queryControlState(ControlListAdapter adapter, ControlItem item) { };
     }
 
 }

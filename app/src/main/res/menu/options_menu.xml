@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/devices" android:onClick="launchDevices" android:title="MRPC Devices" />
-    <item android:id="@+id/clear" android:onClick="clearLayout" android:title="Clear Layout" />
+    <item android:id="@+id/devices" android:title="MRPC Devices" />
+    <item android:id="@+id/reorder" android:title="Reorder Layout" />
+    <item android:id="@+id/clear" android:title="Clear Layout" />
 </menu>

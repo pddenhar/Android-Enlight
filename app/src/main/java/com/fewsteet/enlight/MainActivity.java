@@ -1,109 +1,116 @@
 package com.fewsteet.enlight;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.fewsteet.enlight.browser.DeviceBrowserActivity;
 import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.control.ControlListAdapter;
+import com.fewsteet.enlight.control.ControlSwitchDAO;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
 import net.vector57.android.mrpc.MRPCActivity;
+import net.vector57.mrpc.MRPC;
 import net.vector57.mrpc.Result;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends MRPCActivity {
-    private static String TAG = "MainActivity";
-    private ArrayList<ControlItem> switches;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
-    public void onCreate(Bundle savedInstanceState) {
+    private static String TAG = "MainActivity";
+
+    private CoordinatorLayout rootView;
+    private RecyclerView recyclerView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        switches = new ArrayList<>();
+        rootView = (CoordinatorLayout) findViewById(R.id.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.enlight_controls_list);
-        mRecyclerView.setHasFixedSize(true);
-        // use a linear layout manager
-        mLayoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ControlListAdapter(switches);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView = (RecyclerView) findViewById(R.id.enlight_controls_list);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        recyclerView.setAdapter(new ControlListAdapter(ControlSwitchDAO.getControls(this)));
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        updateSwitchesFromPrefs();
-        updateControls();
-    }
-
-    public void updateSwitchesFromPrefs() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String layoutJson = sharedPref.getString(getString(R.string.layout_preference_key), getString(R.string.default_layout));
-        Log.d(TAG, layoutJson);
-        Type t = new TypeToken<List<ControlItem>>() {}.getType();
-        List<ControlItem> layout = EnlightApp.Gson().fromJson(layoutJson, t);
-        switches.clear();
-        switches.addAll(layout);
-        mAdapter.notifyDataSetChanged();
-    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
+        getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
     }
 
-    private void updateToggle(final ControlItem item) {
-        final String path = item.path;
-        Log.d(TAG, "Sending message for " + path);
-        mrpc(path, null, new Result.Callback() {
-            @Override
-            public void onSuccess(JsonElement value) {
-                Log.d(TAG, "Got result for path " + path);
-                item.state = value;
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    private void updateControls() {
-        for (final ControlItem item: switches) {
-            switch(item.type) {
-                case toggle:
-                    updateToggle(item);
-                    break;
-            }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.devices:
+                startActivity(new Intent(this, DeviceBrowserActivity.class));
+                return true;
+            case R.id.reorder:
+                enterReorderMode();
+                return true;
+            case R.id.clear:
+                ControlSwitchDAO.clear(this);
+                recyclerView.getAdapter().notifyDataSetChanged();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
-    public void clearLayout(MenuItem item) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+    public void enterReorderMode() {
+        final Context ctx = this;
+        new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, // Drag direction
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT  // Swipe direction
+                ) {
+                    @Override
+                    public boolean onMove(
+                            RecyclerView recyclerView,
+                            RecyclerView.ViewHolder viewHolder,
+                            RecyclerView.ViewHolder target
+                    ) {
+                        int selected = recyclerView.getChildAdapterPosition(viewHolder.itemView);
+                        int moveTo = recyclerView.getChildAdapterPosition(viewHolder.itemView);
 
-        sharedPref.edit().remove(getString(R.string.layout_preference_key)).commit();
-        updateSwitchesFromPrefs();
+                        ControlSwitchDAO.addControl(ctx, moveTo, ControlSwitchDAO.removeControl(ctx, selected));
+
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                        final int index = recyclerView.getChildAdapterPosition(viewHolder.itemView);
+                        final ControlItem removed = ControlSwitchDAO.removeControl(ctx, index);
+
+                        recyclerView.getAdapter().notifyDataSetChanged();
+
+                        Snackbar.make(rootView, "Deleted switch", Snackbar.LENGTH_LONG)
+                                .setAction("UNDO", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        ControlSwitchDAO.addControl(ctx, index, removed);
+                                        recyclerView.getAdapter().notifyDataSetChanged();
+                                        Snackbar.make(rootView, "Switch Restored", Snackbar.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .show();
+                    }
+                }).attachToRecyclerView(recyclerView);
     }
-
-    public void launchDevices(MenuItem item) {
-        Intent i = new Intent(this, DeviceBrowserActivity.class);
-        this.startActivity(i);
-    }
-
 }

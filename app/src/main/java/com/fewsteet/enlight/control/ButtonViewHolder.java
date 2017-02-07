@@ -5,8 +5,10 @@ import android.widget.Button;
 
 import net.vector57.android.mrpc.MRPCActivity;
 import com.fewsteet.enlight.R;
+import com.google.gson.JsonElement;
 
 import net.vector57.mrpc.MRPC;
+import net.vector57.mrpc.Result;
 
 /**
  * Created by Alex Sherman on 1/26/2017.
@@ -20,14 +22,12 @@ public class ButtonViewHolder extends ControlListAdapter.ControlViewHolder {
         group_button = (Button)v.findViewById(R.id.group_toggle);
     }
     @Override
-    public void SetControlItem(final ControlItem item) {
+    public void setControlItem(ControlListAdapter adapter, final ControlItem item) {
+        super.setControlItem(adapter, item);
         group_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MRPC mrpc = MRPCActivity.mrpc();
-                if(mrpc != null) {
-                    mrpc.RPC(item.path, null);
-                }
+                MRPCActivity.mrpc(item.path, null);
             }
         });
     }
