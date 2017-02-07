@@ -32,6 +32,8 @@ public class ControlListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 return R.layout.view_slider_item;
             case button:
                 return R.layout.view_button_item;
+            case color:
+                return R.layout.view_color_item;
         }
         return control_items.get(position).type.ordinal();
     }
@@ -46,6 +48,8 @@ public class ControlListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 return new SliderViewHolder(v);
             case R.layout.view_button_item:
                 return new ButtonViewHolder(v);
+            case R.layout.view_color_item:
+                return new ColorViewHolder(v);
             default:
                 throw new IllegalStateException("Unknown type in onCreateViewHolder");
         }
@@ -68,12 +72,13 @@ public class ControlListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         protected void setControlItem(ControlListAdapter adapter, ControlItem item) {
             label.setText(item.name);
             if(!item.stateQueried) {
-                item.stateQueried = true;
                 queryControlState(adapter, item);
             }
         }
 
-        protected void queryControlState(ControlListAdapter adapter, ControlItem item) { };
+        protected void queryControlState(ControlListAdapter adapter, ControlItem item) {
+            item.stateQueried = true;
+        };
     }
 
 }

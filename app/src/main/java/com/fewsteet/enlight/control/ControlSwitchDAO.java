@@ -22,6 +22,13 @@ public class ControlSwitchDAO {
 
             Type t = new TypeToken<List<ControlItem>>() { }.getType();
             controls = EnlightApp.Gson().fromJson(layoutJson, t);
+            for(int i = 0; i < controls.size();) {
+                if(controls.get(i) == null || !controls.get(i).isValid()) {
+                    controls.remove(i);
+                    continue;
+                }
+                i++;
+            }
         }
         return controls;
     }

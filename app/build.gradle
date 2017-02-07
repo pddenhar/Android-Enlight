@@ -22,7 +22,6 @@ android {
 ext {
     androidSupportVersion = '25.0.1'
 }
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -34,4 +33,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     testCompile 'junit:junit:4.12'
     compile project(':mrpc-android')
+    compile project(':colorseekbar')
 }
