@@ -11,6 +11,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.graphics.Shader;
 import android.os.Build;
 import android.support.annotation.ArrayRes;
@@ -21,12 +22,15 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 public class ColorSeekBar extends View {
     private int mBackgroundColor = 0xffffffff;
     private int[] mColorSeeds = new int[]{0xFF000000, 0xFF9900FF, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF, 0xFFFF0000, 0xFFFF00FF, 0xFFFF6600, 0xFFFFFF00, 0xFFFFFFFF, 0xFF000000};
     ;
     private int c0, c1, mAlpha, mRed, mGreen, mBlue;
     private float x, y;
+    private float startDrag = 0.0f;
     private OnColorChangeListener mOnColorChangeLister;
     private Context mContext;
     private boolean mIsShowAlphaBar = false;
@@ -199,9 +203,7 @@ public class ColorSeekBar extends View {
         Paint colorPaint = new Paint();
         colorPaint.setAntiAlias(true);
         int color = getColor(false);
-        int colorToTransparent = Color.argb(0, Color.red(color), Color.green(color), Color.blue(color));
         colorPaint.setColor(color);
-        int[] toAlpha = new int[]{color, colorToTransparent};
         //clear
         canvas.drawBitmap(mTransparentBitmap, 0, 0, null);
 
@@ -211,41 +213,10 @@ public class ColorSeekBar extends View {
         //draw color bar thumb
         float thumbX = colorPosition + realLeft;
         float thumbY = mColorRect.top + mColorRect.height() / 2;
-        canvas.drawCircle(thumbX, thumbY, mBarHeight / 2 + 5, colorPaint);
-
-        //draw color bar thumb radial gradient shader
-        RadialGradient thumbShader = new RadialGradient(thumbX, thumbY, mThumbRadius, toAlpha, null, Shader.TileMode.MIRROR);
-        Paint thumbGradientPaint = new Paint();
-        thumbGradientPaint.setAntiAlias(true);
-        thumbGradientPaint.setShader(thumbShader);
-        canvas.drawCircle(thumbX, thumbY, mThumbHeight / 2, thumbGradientPaint);
-
-        if (mIsShowAlphaBar) {
-
-            //init rect
-            int top = (int) (mThumbHeight + mThumbRadius + mBarHeight + mBarMargin);
-            mAlphaRect = new Rect(realLeft, top, realRight, top + mBarHeight);
-
-            //draw alpha bar
-            Paint alphaBarPaint = new Paint();
-            alphaBarPaint.setAntiAlias(true);
-            LinearGradient alphaBarShader = new LinearGradient(0, 0, mAlphaRect.width(), 0, toAlpha, null, Shader.TileMode.MIRROR);
-            alphaBarPaint.setShader(alphaBarShader);
-            canvas.drawRect(mAlphaRect, alphaBarPaint);
-
-            //draw alpha bar thumb
-            float alphaPosition = (float) mAlphaBarPosition / 255 * mBarWidth;
-            float alphaThumbX = alphaPosition + realLeft;
-            float alphaThumbY = mAlphaRect.top + mAlphaRect.height() / 2;
-            canvas.drawCircle(alphaThumbX, alphaThumbY, mBarHeight / 2 + 5, colorPaint);
-
-            //draw alpha bar thumb radial gradient shader
-            RadialGradient alphaThumbShader = new RadialGradient(alphaThumbX, alphaThumbY, mThumbRadius, toAlpha, null, Shader.TileMode.MIRROR);
-            Paint alphaThumbGradientPaint = new Paint();
-            alphaThumbGradientPaint.setAntiAlias(true);
-            alphaThumbGradientPaint.setShader(alphaThumbShader);
-            canvas.drawCircle(alphaThumbX, alphaThumbY, mThumbHeight / 2, alphaThumbGradientPaint);
-        }
+        Paint black = new Paint();
+        black.setARGB(255,0,0,0);
+        canvas.drawCircle(thumbX, thumbY, mBarHeight + 7, black);
+        canvas.drawCircle(thumbX, thumbY, mBarHeight + 5, colorPaint);
 
         super.onDraw(canvas);
     }
@@ -257,6 +228,7 @@ public class ColorSeekBar extends View {
         y = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                startDrag = 1.0f * (x - realLeft) / mBarWidth * mMaxPosition;
                 if (isOnBar(mColorRect, x, y)) {
                     mMovingColorBar = true;
                 } else if (mIsShowAlphaBar) {
@@ -268,7 +240,8 @@ public class ColorSeekBar extends View {
             case MotionEvent.ACTION_MOVE:
                 getParent().requestDisallowInterceptTouchEvent(true);
                 if (mMovingColorBar) {
-                    float value = (x - realLeft) / mBarWidth * mMaxPosition;
+                    float value = startDrag + (1.0f * (x - realLeft) / mBarWidth * mMaxPosition - startDrag)
+                            / Math.max(1, (abs(y - mColorRect.centerY()) - 100) / 100.0f);
                     mColorBarPosition = (int) value;
                     if (mColorBarPosition < 0) mColorBarPosition = 0;
                     if (mColorBarPosition > mMaxPosition) mColorBarPosition = mMaxPosition;
