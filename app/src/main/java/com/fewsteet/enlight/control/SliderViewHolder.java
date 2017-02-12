@@ -5,6 +5,7 @@ import android.widget.SeekBar;
 
 import net.vector57.android.mrpc.MRPCActivity;
 import com.fewsteet.enlight.R;
+import com.google.gson.JsonElement;
 
 import net.vector57.mrpc.MRPC;
 
@@ -21,9 +22,7 @@ public class SliderViewHolder extends ControlListAdapter.ControlViewHolder {
         group_seek.setMax(100);
     }
 
-    @Override
-    public void setControlItem(ControlListAdapter adapter, final ControlItem item) {
-        super.setControlItem(adapter, item);
+    private void attachListener() {
         group_seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -46,5 +45,21 @@ public class SliderViewHolder extends ControlListAdapter.ControlViewHolder {
                 }
             }
         });
+    }
+
+    @Override
+    protected void setControlItemValue(JsonElement value) {
+        super.setControlItemValue(value);
+        if(value != null && value.getAsJsonPrimitive().isNumber()) {
+            group_seek.setOnSeekBarChangeListener(null);
+            group_seek.setProgress((int) (value.getAsFloat() * 100));
+            attachListener();
+        }
+    }
+
+    @Override
+    public void bindItem(final ControlItem item) {
+        super.bindItem(item);
+        attachListener();
     }
 }

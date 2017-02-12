@@ -28,11 +28,6 @@ public class ControlItem {
     public String name;
     public ControlType type;
     public JsonElement state;
-    public transient boolean stateQueried = false;
-
-    public ControlItem() {
-        this.type = ControlType.toggle;
-    }
 
     public ControlItem(String name, String path, ControlType type) {
         this.name = name;

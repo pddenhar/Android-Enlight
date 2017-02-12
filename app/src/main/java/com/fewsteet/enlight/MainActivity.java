@@ -48,6 +48,12 @@ public class MainActivity extends MRPCActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ControlSwitchDAO.saveControls(this);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
@@ -75,20 +81,20 @@ public class MainActivity extends MRPCActivity {
         final Context ctx = this;
         new ItemTouchHelper(
                 new ItemTouchHelper.SimpleCallback(
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, // Drag direction
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT  // Swipe direction
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.UP | ItemTouchHelper.DOWN, // Drag direction
+                        ItemTouchHelper.RIGHT |ItemTouchHelper.RIGHT  // Swipe direction
                 ) {
+
                     @Override
                     public boolean onMove(
                             RecyclerView recyclerView,
                             RecyclerView.ViewHolder viewHolder,
                             RecyclerView.ViewHolder target
                     ) {
-                        int selected = recyclerView.getChildAdapterPosition(viewHolder.itemView);
-                        int moveTo = recyclerView.getChildAdapterPosition(viewHolder.itemView);
-
-                        ControlSwitchDAO.addControl(ctx, moveTo, ControlSwitchDAO.removeControl(ctx, selected));
-
+                        int selected = viewHolder.getAdapterPosition();
+                        int destination = target.getAdapterPosition();
+                        ControlSwitchDAO.addControl(ctx, destination, ControlSwitchDAO.removeControl(ctx, selected));
+                        recyclerView.getAdapter().notifyItemMoved(selected, destination);
                         return true;
                     }
 

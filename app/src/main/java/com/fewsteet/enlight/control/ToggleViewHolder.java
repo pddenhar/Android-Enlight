@@ -26,38 +26,31 @@ public class ToggleViewHolder extends ControlListAdapter.ControlViewHolder {
     }
 
     @Override
-    public void setControlItem(ControlListAdapter adapter, final ControlItem item) {
-        super.setControlItem(adapter, item);
-        group_toggle.setOnCheckedChangeListener(null);
-        try {
-            Boolean checked = Message.gson().fromJson(item.state, Boolean.class);
-            group_toggle.setChecked(checked != null && checked);
-        }
-        catch(Exception e) {
-            group_toggle.setChecked(false);
-        }
+    protected void bindItem(final ControlItem item) {
+        super.bindItem(item);
+        attachListener();
+    }
+
+    private void attachListener() {
         group_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                MRPC mrpc = MRPCActivity.mrpc();
-                if(mrpc != null) {
-                    mrpc.RPC(item.path, isChecked);
-                }
+            MRPCActivity.mrpc(item.path, isChecked);
             }
         });
     }
 
     @Override
-    public void queryControlState(final ControlListAdapter adapter, final ControlItem item) {
-        final String path = item.path;
-        MRPCActivity.mrpc(path, null, new Result.Callback() {
-            @Override
-            public void onSuccess(JsonElement value) {
-                item.state = value;
-                item.stateQueried = true;
-                setControlItem(adapter, item);
-                adapter.notifyDataSetChanged();
-            }
-        });
+    public void setControlItemValue(final JsonElement value) {
+        super.setControlItemValue(value);
+        group_toggle.setOnCheckedChangeListener(null);
+        try {
+            Boolean checked = Message.gson().fromJson(value, Boolean.class);
+            group_toggle.setChecked(checked != null && checked);
+        }
+        catch(Exception e) {
+            group_toggle.setChecked(false);
+        }
+        attachListener();
     }
 }

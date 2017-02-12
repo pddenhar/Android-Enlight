@@ -7,25 +7,29 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fewsteet.enlight.R;
+import com.google.gson.JsonElement;
+
+import net.vector57.android.mrpc.MRPCActivity;
+import net.vector57.mrpc.Result;
 
 import java.util.List;
 
 public class ControlListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final List<ControlItem> control_items;
+    private final List<ControlItem> controlItems;
 
     public ControlListAdapter(List<ControlItem> control_items) {
-        this.control_items = control_items;
+        this.controlItems = control_items;
     }
 
     @Override
     public int getItemCount() {
-        return control_items.size();
+        return controlItems.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        switch (control_items.get(position).type) {
+        switch (controlItems.get(position).type) {
             case toggle:
                 return R.layout.view_toggle_item;
             case slider:
@@ -35,7 +39,7 @@ public class ControlListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case color:
                 return R.layout.view_color_item;
         }
-        return control_items.get(position).type.ordinal();
+        return controlItems.get(position).type.ordinal();
     }
 
     @Override
@@ -57,27 +61,37 @@ public class ControlListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        ((ControlViewHolder) holder).setControlItem(this, control_items.get(position));
+        ((ControlViewHolder) holder).bindItem(controlItems.get(position));
+        ((ControlViewHolder) holder).queryControlState();
     }
 
-    static class ControlViewHolder extends RecyclerView.ViewHolder {
+    public static class ControlViewHolder extends RecyclerView.ViewHolder {
 
         TextView label;
-
+        ControlItem item;
         ControlViewHolder(View v) {
             super(v);
             label = (TextView)v.findViewById(R.id.group_label);
         }
 
-        protected void setControlItem(ControlListAdapter adapter, ControlItem item) {
+        protected void bindItem(ControlItem item) {
             label.setText(item.name);
-            if(!item.stateQueried) {
-                queryControlState(adapter, item);
-            }
+            this.item = item;
+            setControlItemValue(item.state);
         }
 
-        protected void queryControlState(ControlListAdapter adapter, ControlItem item) {
-            item.stateQueried = true;
+        protected void setControlItemValue(JsonElement value) {
+            item.state = value;
+        }
+
+        public void queryControlState() {
+            final String path = item.path;
+            MRPCActivity.mrpc(path, null, new Result.Callback() {
+                @Override
+                public void onSuccess(JsonElement value) {
+                    setControlItemValue(value);
+                }
+            });
         };
     }
 

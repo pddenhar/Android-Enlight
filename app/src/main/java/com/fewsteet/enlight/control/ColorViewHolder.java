@@ -1,9 +1,10 @@
 package com.fewsteet.enlight.control;
 
-import android.graphics.Color;
 import android.view.View;
 
 import com.fewsteet.enlight.R;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.rtugeek.android.colorseekbar.ColorSeekBar;
 
 import net.vector57.android.mrpc.MRPCActivity;
@@ -20,13 +21,8 @@ public class ColorViewHolder extends ControlListAdapter.ControlViewHolder {
     }
 
     @Override
-    protected void queryControlState(ControlListAdapter adapter, ControlItem item) {
-        super.queryControlState(adapter, item);
-    }
-
-    @Override
-    protected void setControlItem(ControlListAdapter adapter, final ControlItem item) {
-        super.setControlItem(adapter, item);
+    protected void bindItem(final ControlItem item) {
+        super.bindItem(item);
         seekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
             @Override
             public void onColorChangeListener(int i, int i1, int color) {
