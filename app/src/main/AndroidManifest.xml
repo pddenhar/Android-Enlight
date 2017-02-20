@@ -18,7 +18,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".browser.DeviceBrowserActivity" android:parentActivityName=".MainActivity"/>
-        <activity android:name=".debug.DebugActivity" android:parentActivityName=".browser.DeviceBrowserActivity"/>
+        <activity android:name=".debug.DebugActivity" android:parentActivityName=".browser.DeviceBrowserActivity"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

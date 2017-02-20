@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Add Control"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_add_black_24dp"
+        android:id="@+id/addcontrol"
+        android:visible="false" />
+    <item android:title="Finish Reorder"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_check_black_24dp"
+        android:visible="false"
+        android:id="@+id/confirm" />
+    <item android:title="Refresh"
+        android:id="@+id/refresh"
+        android:icon="@drawable/ic_autorenew_black_24dp"
+        app:showAsAction="ifRoom" />
     <item android:id="@+id/devices" android:title="MRPC Devices" />
     <item android:id="@+id/reorder" android:title="Reorder Layout" />
-    <item android:id="@+id/clear" android:title="Clear Layout" />
 </menu>

@@ -58,11 +58,6 @@ public class ControlSwitchDAO {
         saveControls(context);
     }
 
-    public static void clear(Context context) {
-        getControls(context).clear();
-        saveControls(context);
-    }
-
     public static void saveControls(Context context) {
 
         String json = EnlightApp.Gson().toJson(controls);

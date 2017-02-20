@@ -41,16 +41,26 @@ public class ToggleViewHolder extends ControlListAdapter.ControlViewHolder {
     }
 
     @Override
+    public void queryControlState() {
+        this.setControlItemValue(false);
+        super.queryControlState();
+    }
+
+    @Override
     public void setControlItemValue(final JsonElement value) {
         super.setControlItemValue(value);
-        group_toggle.setOnCheckedChangeListener(null);
+        boolean bvalue = group_toggle.isChecked();
         try {
             Boolean checked = Message.gson().fromJson(value, Boolean.class);
-            group_toggle.setChecked(checked != null && checked);
+            bvalue |= checked != null && checked;
         }
-        catch(Exception e) {
-            group_toggle.setChecked(false);
-        }
+        catch(Exception e) { }
+        setControlItemValue(bvalue);
+    }
+
+    private void setControlItemValue(boolean value) {
+        group_toggle.setOnCheckedChangeListener(null);
+        group_toggle.setChecked(value);
         attachListener();
     }
 }
