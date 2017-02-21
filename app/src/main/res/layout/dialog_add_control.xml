@@ -68,8 +68,33 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:id="@+id/type_spinner"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dip"
+        android:id="@+id/argument_row"
+        android:visibility="gone">
+
+        <TextView
+            android:text="Argument"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_weight="1"
-            />
+            android:id="@+id/controlArgumentLabel" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textNoSuggestions"
+            android:text="null"
+            android:ems="10"
+            android:id="@+id/argument_text"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -20,10 +20,17 @@ public class ButtonViewHolder extends ControlListAdapter.ControlViewHolder {
     @Override
     public void bindItem(final ControlItem item) {
         super.bindItem(item);
+        if(item.argument != null) {
+            String argString = item.argument.getAsString();
+            if(argString != null) {
+                argString = argString.replace('_', ' ');
+                group_button.setText(argString);
+            }
+        }
         group_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MRPCActivity.mrpc(item.path, null);
+                MRPCActivity.mrpc(item.path, item.argument);
             }
         });
     }

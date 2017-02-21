@@ -27,12 +27,14 @@ public class ControlItem {
     public String path;
     public String name;
     public ControlType type;
+    public JsonElement argument;
     public JsonElement state;
 
-    public ControlItem(String name, String path, ControlType type) {
+    public ControlItem(String name, String path, JsonElement argument, ControlType type) {
         this.name = name;
         this.path = path;
         this.type = type;
+        this.argument = argument;
     }
 
     public boolean isValid() {
