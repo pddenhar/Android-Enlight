@@ -1,8 +1,9 @@
-package com.fewsteet.enlight.browser;
+package com.fewsteet.enlight.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import com.fewsteet.enlight.EnlightApp;
 import com.fewsteet.enlight.MainActivity;
 import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.R;
@@ -35,6 +35,17 @@ public class AddControlDialog extends DialogFragment {
     Spinner nameList;
     LinearLayout argumentRow;
     EditText argumentText;
+    public static void create(HashMap<String, ArrayList<String>> serviceMap, FragmentManager fragmentManager) {
+        create(serviceMap, fragmentManager, null);
+    }
+    public static void create(HashMap<String, ArrayList<String>> serviceMap, FragmentManager fragmentManager, String selectedName) {
+        Bundle args = new Bundle();
+        args.putSerializable("serviceMap", serviceMap);
+        args.putString("selectedName", selectedName);
+        AddControlDialog dialog = new AddControlDialog();
+        dialog.setArguments(args);
+        dialog.show(fragmentManager, "herp");
+    }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Context act = getActivity();

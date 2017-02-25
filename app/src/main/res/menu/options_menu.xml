@@ -17,4 +17,8 @@
         android:id="@+id/confirm" />
     <item android:id="@+id/devices" android:title="MRPC Devices" />
     <item android:id="@+id/reorder" android:title="Reorder Layout" />
+    <item android:title="Export Layout"
+        android:id="@+id/generatescan" />
+    <item android:title="Import Layout"
+        android:id="@+id/scanlayout" />
 </menu>

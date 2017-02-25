@@ -1,20 +1,17 @@
 package com.fewsteet.enlight.browser;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fewsteet.enlight.EnlightApp;
 import com.fewsteet.enlight.R;
 import com.fewsteet.enlight.debug.DebugActivity;
+import com.fewsteet.enlight.dialog.AddControlDialog;
 import com.fewsteet.enlight.util.MRPCResponses;
 import com.fewsteet.enlight.util.Preferences;
 import com.google.gson.JsonElement;
@@ -22,7 +19,6 @@ import com.google.gson.reflect.TypeToken;
 
 import net.vector57.mrpc.Result;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -118,7 +114,6 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
                         HashMap<String, MRPCResponses.ServiceInfo> services =
                                 EnlightApp.Gson().fromJson(value, new TypeToken<HashMap<String, MRPCResponses.ServiceInfo>>(){}.getType());
 
-                        Bundle args = new Bundle();
                         ArrayList<String> aliases = new ArrayList<String>(item.aliases);
                         aliases.add(item.uuid);
                         HashMap<String, ArrayList<String>> serviceMap = new HashMap<String, ArrayList<String>>();
@@ -127,12 +122,12 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
                         for(String name : aliases) {
                             serviceMap.put(name, serviceList);
                         }
-                        args.putSerializable("serviceMap", serviceMap);
-                        if(item.aliases.size() > 0)
-                            args.putString("selectedName", item.aliases.get(0));
-                        AddControlDialog dialog = new AddControlDialog();
-                        dialog.setArguments(args);
-                        dialog.show(browserActivity.getFragmentManager(), "herp");
+                        if(item.aliases.size() > 0) {
+                            AddControlDialog.create(serviceMap, browserActivity.getFragmentManager(), item.aliases.get(0));
+                        }
+                        else {
+                            AddControlDialog.create(serviceMap, browserActivity.getFragmentManager());
+                        }
                     }
                 });
                 Log.d(TAG, "Add toggle clicked");

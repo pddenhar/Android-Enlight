@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.fewsteet.enlight">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -20,6 +21,10 @@
         <activity android:name=".browser.DeviceBrowserActivity" android:parentActivityName=".MainActivity"/>
         <activity android:name=".debug.DebugActivity" android:parentActivityName=".browser.DeviceBrowserActivity"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullSensor"
+            tools:replace="screenOrientation" />
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.fewsteet.enlight;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -11,15 +12,18 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-import com.fewsteet.enlight.browser.AddControlDialog;
 import com.fewsteet.enlight.browser.DeviceBrowserActivity;
 import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.control.ControlListAdapter;
 import com.fewsteet.enlight.control.ControlSwitchDAO;
+import com.fewsteet.enlight.dialog.ImportControlDialog;
 import com.fewsteet.enlight.util.MRPCResponses;
 import com.fewsteet.enlight.util.Preferences;
 import com.google.gson.JsonElement;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import net.vector57.android.mrpc.MRPCActivity;
 import net.vector57.mrpc.Message;
@@ -133,15 +137,42 @@ public class MainActivity extends MRPCActivity {
             public void onSuccess(JsonElement value) {
                 super.onSuccess(value);
                 MRPCResponses.InfoResponse infoResponse = Message.gson().fromJson(value, MRPCResponses.InfoResponse.class);
+                ArrayList<String> filteredServices = new ArrayList<String>(infoResponse.services);
+                Preferences.filterBlackListedServices(self, filteredServices);
                 for(String path : infoResponse.aliases) {
                     if(!serviceMap.containsKey(path))
                         serviceMap.put(path, new HashSet<String>());
-                    ArrayList<String> filteredServices = new ArrayList<String>(infoResponse.services);
-                    Preferences.filterBlackListedServices(self, filteredServices);
                     serviceMap.get(path).addAll(filteredServices);
                 }
+                if(!serviceMap.containsKey("*"))
+                    serviceMap.put("*", new HashSet<String>());
+                serviceMap.get("*").addAll(filteredServices);
             }
         });
+    }
+
+    private void initiateScan() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        integrator.setPrompt("Scan a barcode");
+        integrator.setBeepEnabled(false);
+        integrator.setBarcodeImageEnabled(false);
+        integrator.initiateScan();
+    }
+
+    // Get the results:
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                ImportControlDialog.create(getFragmentManager(), result.getContents());
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -153,12 +184,17 @@ public class MainActivity extends MRPCActivity {
                     ((ControlListAdapter.ControlViewHolder)recyclerView.findViewHolderForLayoutPosition(i)).queryControlState();
                 }
                 return true;
+            case R.id.scanlayout:
+                initiateScan();
+                return true;
+            case R.id.generatescan:
+                String url = "https://zxing.org/w/chart?cht=qr&chs=500x500&chld=L&choe=UTF-8&chl=";
+                url += Uri.encode(EnlightApp.Gson().toJson(ControlSwitchDAO.getControls(this)));
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+                return true;
             case R.id.addcontrol:
-                Bundle args = new Bundle();
-                args.putSerializable("serviceMap", serviceMap);
-                AddControlDialog dialog = new AddControlDialog();
-                dialog.setArguments(args);
-                dialog.show(getFragmentManager(), "herp");
                 return true;
             case R.id.confirm:
                 menuItemConfirm.setVisible(false);

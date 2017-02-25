@@ -28,7 +28,7 @@ public class ControlItem {
     public String name;
     public ControlType type;
     public JsonElement argument;
-    public JsonElement state;
+    public transient JsonElement state;
 
     public ControlItem(String name, String path, JsonElement argument, ControlType type) {
         this.name = name;
