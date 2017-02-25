@@ -18,4 +18,10 @@ public class MRPCResponses {
         public String name;
         public ArrayList<String> aliases;
     }
+    public static class InfoResponse {
+        public String uuid;
+        public String ip;
+        public ArrayList<String> aliases;
+        public ArrayList<String> services;
+    }
 }

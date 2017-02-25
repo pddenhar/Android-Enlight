@@ -2,29 +2,32 @@ package com.fewsteet.enlight;
 
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.fewsteet.enlight.browser.AddControlDialog;
 import com.fewsteet.enlight.browser.DeviceBrowserActivity;
 import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.control.ControlListAdapter;
 import com.fewsteet.enlight.control.ControlSwitchDAO;
+import com.fewsteet.enlight.util.MRPCResponses;
+import com.fewsteet.enlight.util.Preferences;
 import com.google.gson.JsonElement;
 
 import net.vector57.android.mrpc.MRPCActivity;
-import net.vector57.mrpc.MRPC;
+import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class MainActivity extends MRPCActivity {
 
@@ -36,10 +39,18 @@ public class MainActivity extends MRPCActivity {
     private MenuItem menuItemConfirm;
     private MenuItem menuItemAdd;
     private MenuItem menuItemRefresh;
+    private HashMap<String, HashSet<String>> serviceMap = new HashMap<>();
+    private static MainActivity single;
+
+    public static void notifyDataSetChanged() {
+        if(single != null && single.recyclerView != null)
+            single.recyclerView.getAdapter().notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        single = this;
         createReorderHelper();
         setContentView(R.layout.activity_main);
 
@@ -49,6 +60,12 @@ public class MainActivity extends MRPCActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         recyclerView.setAdapter(new ControlListAdapter(ControlSwitchDAO.getControls(this)));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        queryServiceMap();
     }
 
     private void createReorderHelper() {
@@ -78,7 +95,7 @@ public class MainActivity extends MRPCActivity {
                     final int index = recyclerView.getChildAdapterPosition(viewHolder.itemView);
                     final ControlItem removed = ControlSwitchDAO.removeControl(ctx, index);
 
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                    recyclerView.getAdapter().notifyItemRemoved(index);
 
                     Snackbar.make(rootView, "Deleted switch", Snackbar.LENGTH_LONG)
                             .setAction("UNDO", new View.OnClickListener() {
@@ -109,17 +126,43 @@ public class MainActivity extends MRPCActivity {
         return true;
     }
 
+    private void queryServiceMap() {
+        final Context self = this;
+        mrpc("*.info", null, new Result.Callback() {
+            @Override
+            public void onSuccess(JsonElement value) {
+                super.onSuccess(value);
+                MRPCResponses.InfoResponse infoResponse = Message.gson().fromJson(value, MRPCResponses.InfoResponse.class);
+                for(String path : infoResponse.aliases) {
+                    if(!serviceMap.containsKey(path))
+                        serviceMap.put(path, new HashSet<String>());
+                    ArrayList<String> filteredServices = new ArrayList<String>(infoResponse.services);
+                    Preferences.filterBlackListedServices(self, filteredServices);
+                    serviceMap.get(path).addAll(filteredServices);
+                }
+            }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
+                queryServiceMap();
                 for(int i = 0; i < recyclerView.getChildCount(); i++) {
                     ((ControlListAdapter.ControlViewHolder)recyclerView.findViewHolderForLayoutPosition(i)).queryControlState();
                 }
                 return true;
+            case R.id.addcontrol:
+                Bundle args = new Bundle();
+                args.putSerializable("serviceMap", serviceMap);
+                AddControlDialog dialog = new AddControlDialog();
+                dialog.setArguments(args);
+                dialog.show(getFragmentManager(), "herp");
+                return true;
             case R.id.confirm:
                 menuItemConfirm.setVisible(false);
-                //menuItemAdd.setVisible(true);
+                menuItemAdd.setVisible(true);
                 menuItemRefresh.setVisible(true);
                 reorderHelper.attachToRecyclerView(null);
                 return true;

@@ -16,11 +16,13 @@ import com.fewsteet.enlight.EnlightApp;
 import com.fewsteet.enlight.R;
 import com.fewsteet.enlight.debug.DebugActivity;
 import com.fewsteet.enlight.util.MRPCResponses;
+import com.fewsteet.enlight.util.Preferences;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 import net.vector57.mrpc.Result;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +37,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     private List<MRPCResponses.DeviceInfo> mDataset;
     private DeviceBrowserActivity browserActivity;
     private String TAG = "DeviceListAdapter";
-    private List<String> blackListedServices;
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -58,10 +60,6 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     // Provide a suitable constructor (depends on the kind of dataset)
     public DeviceListAdapter(DeviceBrowserActivity browserActivity) {
         this.browserActivity = browserActivity;
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(browserActivity);
-        String blackListJson = sharedPref.getString("service_blacklist", browserActivity.getString(R.string.default_service_blacklist));
-        blackListedServices = EnlightApp.Gson().fromJson(blackListJson, new TypeToken<ArrayList<String>>() {}.getType());
     }
 
     public void setData(Collection<MRPCResponses.DeviceInfo> data) {
@@ -120,18 +118,18 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
                         HashMap<String, MRPCResponses.ServiceInfo> services =
                                 EnlightApp.Gson().fromJson(value, new TypeToken<HashMap<String, MRPCResponses.ServiceInfo>>(){}.getType());
 
-                        // Remove services we don't care about
-                        for (String blackListedService: blackListedServices) {
-                            if(services.containsKey(blackListedService)) {
-                                services.remove(blackListedService);
-                            }
-                        }
-
                         Bundle args = new Bundle();
-                        args.putStringArrayList("services", new ArrayList<String>(services.keySet()));
-                        ArrayList aliases = new ArrayList(item.aliases);
+                        ArrayList<String> aliases = new ArrayList<String>(item.aliases);
                         aliases.add(item.uuid);
-                        args.putStringArrayList("names", aliases);
+                        HashMap<String, ArrayList<String>> serviceMap = new HashMap<String, ArrayList<String>>();
+                        ArrayList<String> serviceList = new ArrayList<String>(services.keySet());
+                        Preferences.filterBlackListedServices(browserActivity, serviceList);
+                        for(String name : aliases) {
+                            serviceMap.put(name, serviceList);
+                        }
+                        args.putSerializable("serviceMap", serviceMap);
+                        if(item.aliases.size() > 0)
+                            args.putString("selectedName", item.aliases.get(0));
                         AddControlDialog dialog = new AddControlDialog();
                         dialog.setArguments(args);
                         dialog.show(browserActivity.getFragmentManager(), "herp");
