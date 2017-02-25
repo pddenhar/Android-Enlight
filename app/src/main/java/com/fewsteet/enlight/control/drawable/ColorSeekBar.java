@@ -1,4 +1,4 @@
-package com.rtugeek.android.colorseekbar;
+package com.fewsteet.enlight.control.drawable;
 
 
 import android.annotation.TargetApi;
@@ -18,6 +18,8 @@ import android.support.annotation.ArrayRes;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.fewsteet.enlight.R;
 
 import java.util.ArrayList;
 import java.util.List;

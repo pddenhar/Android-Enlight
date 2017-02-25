@@ -34,5 +34,4 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     testCompile 'junit:junit:4.12'
     compile project(':mrpc-android')
-    compile project(':colorseekbar')
 }

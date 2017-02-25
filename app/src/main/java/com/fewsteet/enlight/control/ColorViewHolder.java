@@ -3,9 +3,7 @@ package com.fewsteet.enlight.control;
 import android.view.View;
 
 import com.fewsteet.enlight.R;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.rtugeek.android.colorseekbar.ColorSeekBar;
+import com.fewsteet.enlight.control.drawable.ColorSeekBar;
 
 import net.vector57.android.mrpc.MRPCActivity;
 
