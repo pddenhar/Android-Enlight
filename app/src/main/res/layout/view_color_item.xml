@@ -14,7 +14,8 @@
     <com.fewsteet.enlight.control.drawable.ColorSeekBar
         android:id="@+id/colorSlider"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
         android:layout_below="@id/group_label"
         android:max="100"
         app:colorSeeds="@array/material_colors" />

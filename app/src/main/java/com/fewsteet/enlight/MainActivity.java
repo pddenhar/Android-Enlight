@@ -61,7 +61,7 @@ public class MainActivity extends MRPCActivity {
         rootView = (CoordinatorLayout) findViewById(R.id.activity_main);
         recyclerView = (RecyclerView) findViewById(R.id.enlight_controls_list);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         recyclerView.setAdapter(new ControlListAdapter(ControlSwitchDAO.getControls(this)));
     }
