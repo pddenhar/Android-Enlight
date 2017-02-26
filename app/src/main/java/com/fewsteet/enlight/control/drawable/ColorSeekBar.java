@@ -258,7 +258,7 @@ public class ColorSeekBar extends View {
 
     public int dp2px(float dpValue) {
         final float scale = mContext.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
+        return (int) (dpValue * scale);
     }
 
     public void setColorBarPosition(int value) {

@@ -34,10 +34,10 @@ public class ToggleViewHolder extends ControlListAdapter.ControlViewHolder {
     }
 
     private void attachListener() {
-        group_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        group_toggle.setOnCheckedChangeListener(new EToggleButton.CheckChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            MRPCActivity.mrpc(item.path, isChecked);
+            public void onCheckedChanged(EToggleButton buttonView, boolean isChecked) {
+                MRPCActivity.mrpc(item.path, isChecked);
             }
         });
     }

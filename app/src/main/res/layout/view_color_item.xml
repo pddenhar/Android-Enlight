@@ -5,11 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:text="Device Group:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        style="@style/ControlLabelStyle"
         android:id="@+id/group_label" />
     <com.fewsteet.enlight.control.drawable.ColorSeekBar
         android:id="@+id/colorSlider"
