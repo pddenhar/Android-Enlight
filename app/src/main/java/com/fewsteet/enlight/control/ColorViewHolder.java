@@ -23,7 +23,7 @@ public class ColorViewHolder extends ControlListAdapter.ControlViewHolder {
         super.bindItem(item);
         seekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
             @Override
-            public void onColorChangeListener(int i, int i1, int color) {
+            public void onColorChangeListener(int i, int color) {
                 float r = ((color >> 16) & 0xFF) / 255.0f;
                 float g = ((color >> 8) & 0xFF) / 255.0f;
                 float b = (color & 0xFF) / 255.0f;

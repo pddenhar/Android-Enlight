@@ -59,9 +59,7 @@ public class ControlSwitchDAO {
     }
 
     public static void saveControls(Context context) {
-
         String json = EnlightApp.Gson().toJson(controls);
-        Log.d(TAG, json);
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putString(getKey(context), json)
