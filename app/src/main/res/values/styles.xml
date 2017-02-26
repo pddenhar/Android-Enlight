@@ -6,8 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorActive">@color/colorPrimary</item>
-        <item name="colorInactive">@color/gray</item>
+
+        <item name="colorToggleActive">@color/colorPrimary</item>
+        <item name="colorToggleInactive">@color/gray</item>
+        <item name="colorButton">@color/gray</item>
+
     </style>
     <style name="ControlLabelStyle">
         <item name="android:gravity">center_horizontal</item>

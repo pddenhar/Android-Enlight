@@ -10,7 +10,11 @@
     </declare-styleable>
 
     <declare-styleable name="EToggleButton">
-        <attr name="colorActive" format="color"/>
-        <attr name="colorInactive" format="color"/>
+        <attr name="colorToggleActive" format="color"/>
+        <attr name="colorToggleInactive" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="EButton">
+        <attr name="colorButton" format="color"/>
     </declare-styleable>
 </resources>

@@ -5,6 +5,7 @@ import android.widget.Button;
 
 import net.vector57.android.mrpc.MRPCActivity;
 import com.fewsteet.enlight.R;
+import com.fewsteet.enlight.control.drawable.EButton;
 
 /**
  * Created by Alex Sherman on 1/26/2017.
@@ -12,10 +13,10 @@ import com.fewsteet.enlight.R;
 
 
 public class ButtonViewHolder extends ControlListAdapter.ControlViewHolder {
-    public Button group_button;
+    public EButton group_button;
     public ButtonViewHolder(View v) {
         super(v);
-        group_button = (Button)v.findViewById(R.id.group_toggle);
+        group_button = (EButton)v.findViewById(R.id.group_toggle);
     }
     @Override
     public void bindItem(final ControlItem item) {

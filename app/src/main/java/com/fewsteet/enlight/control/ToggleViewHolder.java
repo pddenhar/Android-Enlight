@@ -30,7 +30,7 @@ public class ToggleViewHolder extends ControlListAdapter.ControlViewHolder {
     protected void bindItem(final ControlItem item) {
         super.bindItem(item);
         attachListener();
-        group_toggle.setLabel(item.name);
+        group_toggle.setText(item.name);
     }
 
     private void attachListener() {
