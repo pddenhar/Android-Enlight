@@ -6,6 +6,7 @@ import android.widget.ToggleButton;
 
 import net.vector57.android.mrpc.MRPCActivity;
 import com.fewsteet.enlight.R;
+import com.fewsteet.enlight.control.drawable.EToggleButton;
 import com.google.gson.JsonElement;
 
 import net.vector57.mrpc.MRPC;
@@ -19,23 +20,24 @@ import net.vector57.mrpc.Result;
 
 public class ToggleViewHolder extends ControlListAdapter.ControlViewHolder {
     // each data item is just a string in this case
-    public ToggleButton group_toggle;
+    public EToggleButton group_toggle;
     public ToggleViewHolder(View v) {
         super(v);
-        group_toggle = (ToggleButton)v.findViewById(R.id.group_toggle);
+        group_toggle = (EToggleButton)v.findViewById(R.id.group_toggle);
     }
 
     @Override
     protected void bindItem(final ControlItem item) {
         super.bindItem(item);
         attachListener();
+        group_toggle.setText(item.name);
     }
 
     private void attachListener() {
-        group_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        group_toggle.setOnCheckedChangeListener(new EToggleButton.CheckChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            MRPCActivity.mrpc(item.path, isChecked);
+            public void onCheckedChanged(EToggleButton buttonView, boolean isChecked) {
+                MRPCActivity.mrpc(item.path, isChecked);
             }
         });
     }

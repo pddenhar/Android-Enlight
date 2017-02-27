@@ -4,11 +4,17 @@
         <attr name="colorSeeds" format="reference" />
         <attr name="barHeight" format="dimension" />
         <attr name="thumbHeight" format="dimension" />
-        <attr name="showAlphaBar" format="boolean" />
-        <attr name="alphaBarPosition" format="integer" />
         <attr name="colorBarPosition" format="integer" />
         <attr name="bgColor" format="color"/>
-        <attr name="barMargin" format="dimension"/>
         <attr name="maxPosition" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="EToggleButton">
+        <attr name="colorToggleActive" format="color"/>
+        <attr name="colorToggleInactive" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="EButton">
+        <attr name="colorButton" format="color"/>
     </declare-styleable>
 </resources>

@@ -75,7 +75,8 @@ public class ControlListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         protected void bindItem(ControlItem item) {
-            label.setText(item.name);
+            if(label != null)
+                label.setText(item.name);
             this.item = item;
             setControlItemValue(item.state);
         }
