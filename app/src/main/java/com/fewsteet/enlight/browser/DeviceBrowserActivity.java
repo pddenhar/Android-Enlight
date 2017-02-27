@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class DeviceBrowserActivity extends MRPCActivity {
     final static String TAG = "DeviceBrowserActivity";
-    private final HashMap<String, MRPCResponses.DeviceInfo> devices = new HashMap<String, MRPCResponses.DeviceInfo>();
+    private final HashMap<String, MRPCResponses.InfoResponse> devices = new HashMap<String, MRPCResponses.InfoResponse>();
     private ArrayList<String> blackListedServices = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private DeviceListAdapter mAdapter;
@@ -41,28 +41,15 @@ public class DeviceBrowserActivity extends MRPCActivity {
         // specify an adapter (see also next example)
         mAdapter = new DeviceListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        findDevices(null);
+        mAdapter.setData(MRPCResponses.nodeMap.values());
     }
 
     public void findDevices(View v) {
-        devices.clear();
-        mAdapter.setData(devices.values());
-        mrpc().RPC("*.alias", null, new Result.Callback() {
+        MRPCResponses.nodeMap.clear();
+        MRPCResponses.queryServiceMap(this, new MRPCResponses.InfoResponseHandler() {
             @Override
-            public void onResult(Message.Response response) {
-                if(response.error == null) {
-                    String uuid = response.src;
-                    ArrayList<String> names = Message.gson().fromJson(response.result, new TypeToken<ArrayList<String>>(){}.getType());
-                    if(!devices.containsKey(uuid)) {
-                        devices.put(uuid, new MRPCResponses.DeviceInfo(uuid));
-                    }
-                    devices.get(uuid).aliases = names;
-                    mAdapter.setData(devices.values());
-                }
+            public void handle(MRPCResponses.InfoResponse info) {
+                mAdapter.setData(MRPCResponses.nodeMap.values());
             }
         });
     }

@@ -18,6 +18,7 @@ import com.fewsteet.enlight.browser.DeviceBrowserActivity;
 import com.fewsteet.enlight.control.ControlItem;
 import com.fewsteet.enlight.control.ControlListAdapter;
 import com.fewsteet.enlight.control.ControlSwitchDAO;
+import com.fewsteet.enlight.dialog.AddControlDialog;
 import com.fewsteet.enlight.dialog.ImportControlDialog;
 import com.fewsteet.enlight.util.MRPCResponses;
 import com.fewsteet.enlight.util.Preferences;
@@ -43,7 +44,6 @@ public class MainActivity extends MRPCActivity {
     private MenuItem menuItemConfirm;
     private MenuItem menuItemAdd;
     private MenuItem menuItemRefresh;
-    private HashMap<String, HashSet<String>> serviceMap = new HashMap<>();
     private static MainActivity single;
 
     public static void notifyDataSetChanged() {
@@ -69,7 +69,7 @@ public class MainActivity extends MRPCActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        queryServiceMap();
+        MRPCResponses.queryServiceMap(this, null);
     }
 
     private void createReorderHelper() {
@@ -130,27 +130,6 @@ public class MainActivity extends MRPCActivity {
         return true;
     }
 
-    private void queryServiceMap() {
-        final Context self = this;
-        mrpc("*.info", null, new Result.Callback() {
-            @Override
-            public void onSuccess(JsonElement value) {
-                super.onSuccess(value);
-                MRPCResponses.InfoResponse infoResponse = Message.gson().fromJson(value, MRPCResponses.InfoResponse.class);
-                ArrayList<String> filteredServices = new ArrayList<String>(infoResponse.services);
-                Preferences.filterBlackListedServices(self, filteredServices);
-                for(String path : infoResponse.aliases) {
-                    if(!serviceMap.containsKey(path))
-                        serviceMap.put(path, new HashSet<String>());
-                    serviceMap.get(path).addAll(filteredServices);
-                }
-                if(!serviceMap.containsKey("*"))
-                    serviceMap.put("*", new HashSet<String>());
-                serviceMap.get("*").addAll(filteredServices);
-            }
-        });
-    }
-
     private void initiateScan() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -179,7 +158,7 @@ public class MainActivity extends MRPCActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                queryServiceMap();
+                MRPCResponses.queryServiceMap(this, null);
                 for(int i = 0; i < recyclerView.getChildCount(); i++) {
                     ((ControlListAdapter.ControlViewHolder)recyclerView.findViewHolderForLayoutPosition(i)).queryControlState();
                 }
@@ -195,6 +174,7 @@ public class MainActivity extends MRPCActivity {
                 startActivity(i);
                 return true;
             case R.id.addcontrol:
+                AddControlDialog.create(MRPCResponses.serviceMap, getFragmentManager());
                 return true;
             case R.id.confirm:
                 menuItemConfirm.setVisible(false);

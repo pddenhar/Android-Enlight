@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by Alex Sherman on 12/20/2016.
@@ -35,10 +36,10 @@ public class AddControlDialog extends DialogFragment {
     Spinner nameList;
     LinearLayout argumentRow;
     EditText argumentText;
-    public static void create(HashMap<String, ArrayList<String>> serviceMap, FragmentManager fragmentManager) {
+    public static void create(HashMap<String, HashSet<String>> serviceMap, FragmentManager fragmentManager) {
         create(serviceMap, fragmentManager, null);
     }
-    public static void create(HashMap<String, ArrayList<String>> serviceMap, FragmentManager fragmentManager, String selectedName) {
+    public static void create(HashMap<String, HashSet<String>> serviceMap, FragmentManager fragmentManager, String selectedName) {
         Bundle args = new Bundle();
         args.putSerializable("serviceMap", serviceMap);
         args.putString("selectedName", selectedName);
@@ -51,10 +52,10 @@ public class AddControlDialog extends DialogFragment {
         final Context act = getActivity();
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        HashMap<String, ArrayList<String>> _serviceMap = (HashMap<String, ArrayList<String>>)getArguments().getSerializable("serviceMap");
+        HashMap<String, HashSet<String>> _serviceMap = (HashMap<String, HashSet<String>>)getArguments().getSerializable("serviceMap");
         if(_serviceMap == null)
             _serviceMap = new HashMap<>();
-        final HashMap<String, ArrayList<String>> serviceMap = _serviceMap;
+        final HashMap<String, HashSet<String>> serviceMap = _serviceMap;
         final String selectedName = getArguments().getString("selectedName");
 
         // Use the Builder class for convenient dialog construction

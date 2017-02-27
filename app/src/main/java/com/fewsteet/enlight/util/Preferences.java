@@ -9,6 +9,7 @@ import com.fewsteet.enlight.R;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class Preferences {
         String blackListJson = sharedPref.getString("service_blacklist", ctx.getString(R.string.default_service_blacklist));
         return EnlightApp.Gson().fromJson(blackListJson, new TypeToken<ArrayList<String>>() {}.getType());
     }
-    public static void filterBlackListedServices(Context ctx, List<String> services) {
+    public static void filterBlackListedServices(Context ctx, HashSet<String> services) {
         // Remove services we don't care about
         for (String blackListedService: blackListedServices(ctx)) {
             while(services.contains(blackListedService)) {

@@ -17,11 +17,13 @@ import com.fewsteet.enlight.util.Preferences;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import net.vector57.android.mrpc.MRPCActivity;
 import net.vector57.mrpc.Result;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -30,7 +32,7 @@ import java.util.List;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder> {
 
-    private List<MRPCResponses.DeviceInfo> mDataset;
+    private List<MRPCResponses.InfoResponse> mDataset;
     private DeviceBrowserActivity browserActivity;
     private String TAG = "DeviceListAdapter";
 
@@ -58,7 +60,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         this.browserActivity = browserActivity;
     }
 
-    public void setData(Collection<MRPCResponses.DeviceInfo> data) {
+    public void setData(Collection<MRPCResponses.InfoResponse> data) {
         mDataset = new ArrayList<>(data);
         notifyDataSetChanged();
     }
@@ -82,13 +84,13 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-        final MRPCResponses.DeviceInfo item = mDataset.get(position);
+        final MRPCResponses.InfoResponse item = mDataset.get(position);
 
         holder.mUUIDTV.setText("UUID: "+item.uuid);
         holder.mOptionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                browserActivity.startActivity(DebugActivity.createIntent(browserActivity, item.uuid));
+                browserActivity.startActivity(DebugActivity.createIntent(browserActivity, item));
             }
         });
         if(item.aliases.size() > 0) {
@@ -100,39 +102,20 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         holder.mAddToHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                browserActivity.mrpc(item.uuid + ".configure_service", null, new Result.Callback() {
-                    boolean opened = false;
-                    @Override
-                    public void onSuccess(JsonElement value) {
-                        super.onSuccess(value);
-
-                        // Don't open the dialog more than once on multiple responses
-                        if(opened)
-                            return;
-                        opened = true;
-
-                        HashMap<String, MRPCResponses.ServiceInfo> services =
-                                EnlightApp.Gson().fromJson(value, new TypeToken<HashMap<String, MRPCResponses.ServiceInfo>>(){}.getType());
-
-                        ArrayList<String> aliases = new ArrayList<String>(item.aliases);
-                        aliases.add(item.uuid);
-                        HashMap<String, ArrayList<String>> serviceMap = new HashMap<String, ArrayList<String>>();
-                        ArrayList<String> serviceList = new ArrayList<String>(services.keySet());
-                        Preferences.filterBlackListedServices(browserActivity, serviceList);
-                        for(String name : aliases) {
-                            serviceMap.put(name, serviceList);
-                        }
-                        if(item.aliases.size() > 0) {
-                            AddControlDialog.create(serviceMap, browserActivity.getFragmentManager(), item.aliases.get(0));
-                        }
-                        else {
-                            AddControlDialog.create(serviceMap, browserActivity.getFragmentManager());
-                        }
-                    }
-                });
-                Log.d(TAG, "Add toggle clicked");
-                //act.addControl(group, "/" + group +".light");
-
+                ArrayList<String> aliases = new ArrayList<String>(item.aliases);
+                aliases.add(item.uuid);
+                HashMap<String, HashSet<String>> serviceMap = new HashMap<String, HashSet<String>>();
+                HashSet<String> serviceList = new HashSet<String>(item.services);
+                Preferences.filterBlackListedServices(browserActivity, serviceList);
+                for(String name : aliases) {
+                    serviceMap.put(name, serviceList);
+                }
+                if(item.aliases.size() > 0) {
+                    AddControlDialog.create(serviceMap, browserActivity.getFragmentManager(), item.aliases.get(0));
+                }
+                else {
+                    AddControlDialog.create(serviceMap, browserActivity.getFragmentManager());
+                }
             }
         });
     }

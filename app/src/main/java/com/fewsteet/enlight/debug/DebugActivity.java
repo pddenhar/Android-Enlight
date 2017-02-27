@@ -11,7 +11,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import net.vector57.android.mrpc.MRPCActivity;
+
+import com.fewsteet.enlight.EnlightApp;
 import com.fewsteet.enlight.R;
+import com.fewsteet.enlight.util.MRPCResponses;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
@@ -25,13 +28,12 @@ import java.util.Map;
 public class DebugActivity extends MRPCActivity {
 
     private static final String LOGTAG = "DebugActivity";
-    private static final String GUID_KEY = "GUID";
+    private static final String INFO_KEY = "info";
 
-    public static Intent createIntent(Activity caller, String guid) {
-        return new Intent(caller, DebugActivity.class).putExtra(GUID_KEY, guid);
+    public static Intent createIntent(Activity caller, MRPCResponses.InfoResponse info) {
+        return new Intent(caller, DebugActivity.class).putExtra(INFO_KEY, EnlightApp.Gson().toJson(info));
     }
 
-    private ProgressBar progressBar;
     private View content;
     private Spinner functionList;
 
@@ -40,9 +42,14 @@ public class DebugActivity extends MRPCActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug);
 
-        progressBar = (ProgressBar) findViewById(R.id.debug_progress);
         content = findViewById(R.id.debug_content);
         functionList = (Spinner) findViewById(R.id.function_spinner);
+
+        final MRPCResponses.InfoResponse info = EnlightApp.Gson().fromJson(getIntent().getStringExtra(INFO_KEY), MRPCResponses.InfoResponse.class);
+
+        ArrayAdapter<String> functionAdapter = new ArrayAdapter<>(DebugActivity.this, android.R.layout.simple_spinner_item, info.services);
+        functionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        functionList.setAdapter(functionAdapter);
 
         final TextView requestView = (TextView) findViewById(R.id.request);
         final TextView responseView = (TextView) findViewById(R.id.response);
@@ -52,7 +59,7 @@ public class DebugActivity extends MRPCActivity {
             public void onClick(View view) {
                 responseView.setText("");
                 mrpc(
-                        getIntent().getStringExtra(GUID_KEY) + "." + functionList.getSelectedItem(),
+                        info.uuid + "." + functionList.getSelectedItem(),
                         new JsonParser().parse(requestView.getText().toString()),
                         new Result.Callback() {
                             @Override
@@ -68,33 +75,6 @@ public class DebugActivity extends MRPCActivity {
                             }
                         }
                 );
-            }
-        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        mrpc().RPC(getIntent().getStringExtra(GUID_KEY) + ".configure_service", null, new Result.Callback() {
-            @Override
-            public void onResult(Message.Response response) {
-                progressBar.setVisibility(View.GONE);
-                super.onResult(response);
-                content.setVisibility(View.VISIBLE);
-
-            }
-            @Override
-            public void onSuccess(JsonElement value) {
-
-                final List<String> functions = new ArrayList<>();
-                for(Map.Entry<String, JsonElement> child : value.getAsJsonObject().entrySet()) {
-                    functions.add(child.getKey());
-                }
-
-                ArrayAdapter<String> functionAdapter = new ArrayAdapter<>(DebugActivity.this, android.R.layout.simple_spinner_item, functions);
-                functionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                functionList.setAdapter(functionAdapter);
             }
         });
     }
