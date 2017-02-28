@@ -71,7 +71,7 @@ public class AddControlDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         String name = (String)nameList.getSelectedItem();
                             JsonElement argument = new JsonParser().parse(argumentText.getText().toString());
-                        ControlItem control = new ControlItem(name, "/" + name + "." + (String)functionList.getSelectedItem(),
+                        ControlItem control = new ControlItem(name, name + "." + (String)functionList.getSelectedItem(),
                                 argument, ControlItem.ControlType.values()[(int)controlType.getSelectedItemId()]);
                         ControlSwitchDAO.addControl(act, control);
                         MainActivity.notifyDataSetChanged();
