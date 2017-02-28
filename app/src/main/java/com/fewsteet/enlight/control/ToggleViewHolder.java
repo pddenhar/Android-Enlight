@@ -53,7 +53,7 @@ public class ToggleViewHolder extends ControlListAdapter.ControlViewHolder {
         super.setControlItemValue(value);
         boolean bvalue = group_toggle.isChecked();
         try {
-            Boolean checked = Message.gson().fromJson(value, Boolean.class);
+            Boolean checked = MRPC.gson().fromJson(value, Boolean.class);
             bvalue |= checked != null && checked;
         }
         catch(Exception e) { }

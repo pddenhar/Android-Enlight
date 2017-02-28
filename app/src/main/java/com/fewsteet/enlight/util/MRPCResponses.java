@@ -6,6 +6,7 @@ import android.icu.text.IDNA;
 import com.google.gson.JsonElement;
 
 import net.vector57.android.mrpc.MRPCActivity;
+import net.vector57.mrpc.MRPC;
 import net.vector57.mrpc.Message;
 import net.vector57.mrpc.Result;
 
@@ -28,7 +29,7 @@ public class MRPCResponses {
             @Override
             public void onSuccess(JsonElement value) {
                 super.onSuccess(value);
-                MRPCResponses.InfoResponse infoResponse = Message.gson().fromJson(value, MRPCResponses.InfoResponse.class);
+                MRPCResponses.InfoResponse infoResponse = MRPC.gson().fromJson(value, MRPCResponses.InfoResponse.class);
                 HashSet<String> filteredServices = new HashSet<String>(infoResponse.services);
                 Preferences.filterBlackListedServices(ctx, filteredServices);
                 nodeMap.put(infoResponse.uuid, infoResponse);
