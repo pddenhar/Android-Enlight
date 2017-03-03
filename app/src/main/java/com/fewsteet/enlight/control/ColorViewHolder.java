@@ -27,7 +27,7 @@ public class ColorViewHolder extends ControlListAdapter.ControlViewHolder {
                 float r = ((color >> 16) & 0xFF) / 255.0f;
                 float g = ((color >> 8) & 0xFF) / 255.0f;
                 float b = (color & 0xFF) / 255.0f;
-                MRPCActivity.mrpc(item.path, new float[] { r, g, b});
+                MRPCActivity.mrpc(item.path, new float[] { r, g, b}, null, false);
             }
         });
     }

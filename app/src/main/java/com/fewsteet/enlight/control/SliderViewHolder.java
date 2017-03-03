@@ -26,10 +26,7 @@ public class SliderViewHolder extends ControlListAdapter.ControlViewHolder {
         group_seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MRPC mrpc = MRPCActivity.mrpc();
-                if(mrpc != null) {
-                    mrpc.RPC(item.path, i / 100.0f, null, false);
-                }
+                MRPCActivity.mrpc(item.path, i / 100.0f, null, false);
             }
 
             @Override
