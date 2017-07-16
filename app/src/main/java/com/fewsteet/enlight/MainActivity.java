@@ -191,6 +191,9 @@ public class MainActivity extends MRPCActivity {
                 menuItemRefresh.setVisible(false);
                 reorderHelper.attachToRecyclerView(recyclerView);
                 return true;
+            case R.id.preferences:
+                startActivity(new Intent(this, EnlightPreferenceActivity.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

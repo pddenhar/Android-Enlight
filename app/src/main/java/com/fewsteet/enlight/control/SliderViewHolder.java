@@ -3,6 +3,7 @@ package com.fewsteet.enlight.control;
 import android.view.View;
 import android.widget.SeekBar;
 
+import net.vector57.android.mrpc.AndroidMRPC;
 import net.vector57.android.mrpc.MRPCActivity;
 import com.fewsteet.enlight.R;
 import com.google.gson.JsonElement;
@@ -36,7 +37,7 @@ public class SliderViewHolder extends ControlListAdapter.ControlViewHolder {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                MRPC mrpc = MRPCActivity.mrpc();
+                AndroidMRPC mrpc = MRPCActivity.mrpc();
                 if(mrpc != null) {
                     mrpc.RPC(item.path, seekBar.getProgress() / 100.0f, null, true);
                 }

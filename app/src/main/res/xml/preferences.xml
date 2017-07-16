@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_preferences"
+    >
+    <EditTextPreference android:title="Proxy URL"
+        android:key="MRPC_proxy_url"
+        android:summary="Allow Enlight to use an HTTP Proxy URL for when you're not connected to WiFi"></EditTextPreference>
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:title="Use HTTPS"
+        android:key="MRPC_url_is_https" />
+    <EditTextPreference android:title="API Key"
+        android:key="MRPC_api_key"
+        android:summary="The Enlight API key to use with an HTTP Proxy"></EditTextPreference>
+</PreferenceScreen>

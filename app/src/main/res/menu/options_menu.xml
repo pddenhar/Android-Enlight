@@ -21,4 +21,6 @@
         android:id="@+id/generatescan" />
     <item android:title="Import Layout"
         android:id="@+id/scanlayout" />
+    <item android:title="Preferences"
+        android:id="@+id/preferences" />
 </menu>
