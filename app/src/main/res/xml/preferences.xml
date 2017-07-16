@@ -2,6 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_preferences"
     >
+    <EditTextPreference
+        android:defaultValue=""
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Home WiFi SSID"
+        android:key="MRPC_home_wifi_ssid"
+        android:summary="If empty will use any WiFi connection as home"/>
     <EditTextPreference android:title="Proxy URL"
         android:key="MRPC_proxy_url"
         android:summary="Allow Enlight to use an HTTP Proxy URL for when you're not connected to WiFi"></EditTextPreference>
